@@ -36,9 +36,20 @@ describe "SexpCliTools::Cli" do
       _(subject).wont_match /bicycle.rb/
     end
 
-    it "does match our child classs" do
+    it "does match our child class" do
       _(subject).must_match /mountain_bike.rb/
       _(subject).must_match /road_bike.rb/
+    end
+  end
+
+  describe "sexp find parent-class" do
+    it "doesn't match our child classes" do
+      _(subject).wont_match /mountain_bike.rb/
+      _(subject).wont_match /road_bike.rb/
+    end
+
+    it "does match our parent class" do
+      _(subject).must_match /bicycle.rb/
     end
   end
 end
