@@ -52,4 +52,15 @@ describe "SexpCliTools::Cli" do
       _(subject).must_match /bicycle.rb/
     end
   end
+
+  describe "sexp find super-caller" do
+    it "doesn't match our parent class" do
+      _(subject).wont_match /bicycle.rb/
+    end
+
+    it "does match our child class" do
+      _(subject).must_match /mountain_bike.rb/
+      _(subject).must_match /road_bike.rb/
+    end
+  end
 end
