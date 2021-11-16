@@ -63,4 +63,12 @@ describe "SexpCliTools::Cli" do
       _(subject).must_match /road_bike.rb/
     end
   end
+
+  describe "sexp find '(class ___)'" do
+    it "lists all files with classes defined" do
+      _(subject).must_match /bicycle.rb/
+      _(subject).must_match /mountain_bike.rb/
+      _(subject).must_match /road_bike.rb/
+    end
+  end
 end
