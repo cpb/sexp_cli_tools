@@ -2,6 +2,8 @@ require "sexp_cli_tools/version"
 
 require "ruby_parser"
 
+require "sexp_cli_tools/matchers/super_caller"
+
 module SexpCliTools
 
   MATCHERS = {
