@@ -21,4 +21,15 @@ describe "SexpCliTools::Cli" do
   describe "sexp" do
     it { _(subject).wont_be :empty? }
   end
+
+  describe "sexp find child-class" do
+    it "doesn't match our parent class" do
+      _(subject).wont_match /bicycle.rb/
+    end
+
+    it "does match our child classs" do
+      _(subject).must_match /mountain_bike.rb/
+      _(subject).must_match /road_bike.rb/
+    end
+  end
 end
