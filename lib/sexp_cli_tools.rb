@@ -1,10 +1,12 @@
-require "sexp_cli_tools/version"
+# frozen_string_literal: true
 
 require "ruby_parser"
 
-require "sexp_cli_tools/matchers/super_caller"
+require_relative "sexp_cli_tools/version"
+require_relative "sexp_cli_tools/matchers/super_caller"
 
 module SexpCliTools
+  class Error < StandardError; end
 
   MATCHERS = {
     "child-class" => Sexp::Matcher.parse('(class _ (const _) ___)'),

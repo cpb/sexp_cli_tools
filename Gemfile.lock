@@ -1,3 +1,9 @@
+PATH
+  remote: .
+  specs:
+    sexp_cli_tools (0.1.0)
+      ruby_parser (~> 3.18.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -74,7 +80,7 @@ DEPENDENCIES
   minitest (~> 5.0)
   pry (~> 0.14.1)
   rake (~> 13.0)
-  ruby_parser (~> 3.18.1)
+  sexp_cli_tools!
 
 BUNDLED WITH
    2.2.22
