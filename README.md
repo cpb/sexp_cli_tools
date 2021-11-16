@@ -89,6 +89,12 @@ The `sexp` command offers a convenient shortcut to the `Sexp::Matcher` expressio
 
 #### Methods that call super, and methods that are super
 
+##### Iterating on figuring out `Sexp::Matcher` patterns
+
+What isn't show in [the commit which added the `Sexp::Matcher`](https://github.com/cpb/sexp_cli_tools/commit/34db6012b03f705b1d9c23025d3636fbf9d801dd) is the trial and error in the console trying to remember the terse rules.
+
+Setting up a unit test can help close that iteration loop.
+
 #### Hook methods from super callers
 
 #### Hook calls from super methods
