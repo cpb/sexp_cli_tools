@@ -78,6 +78,15 @@ The `Sexp::Matcher` expression that matches any class with an explicit parent is
 
 It is also possible to include negation in `Sexp::Matcher`. A class with an implicit parent does not have the constant s-expression `(const _)`. Right now, our class s-expression matcher, `(class ___)` matches all our classes. To match only `Bicycle` we must use negation. That s-expression is `(class _ [not? (const _)] ___)`.
 
+##### Capturing what we've learned in a tool that people can use
+
+Knowing the syntax for `Sexp::Matcher` expressions gives us some confidence that we can start iterating on a tool to help us achieve our goal. The implicit expectation in the project name is that a command line interface is provided. To complete an initial release of a command line tool, we'll use the rubygem `aruba` to help with test setup and teardown.
+
+The `sexp` command offers a convenient shortcut to the `Sexp::Matcher` expressions we'll develop. As we figure out the s-expression matchers along the way, we can add to the list of known matchers to create simple shortcuts, like with the builtin `sexp find child-class` or `sexp find parent-class`.
+
+- Checkout the [tests for examples](https://github.com/cpb/sexp_cli_tools/blob/main/test/sexp_cli_tools/cli_test.rb#L34-L54) of how to test drive your own.
+- Checkout the [implementation](https://github.com/cpb/sexp_cli_tools/blob/find-child-class/lib/sexp_cli_tools.rb#L8-L9) to see how easy it is to add one.
+
 #### Methods that call super, and methods that are super
 
 #### Hook methods from super callers
