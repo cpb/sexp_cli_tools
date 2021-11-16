@@ -18,7 +18,7 @@ Lets imagine a scenario where we have achieved total consensus in an organizatio
 #### Goal
 
 - Replace methods that call super with a hook method
-- Modify parent classes implementation of the supered method to call hook methods
+- Modify parent class' implementation of the supered method to call hook methods
 
 #### Initial state
 
