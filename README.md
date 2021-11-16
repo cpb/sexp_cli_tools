@@ -66,7 +66,13 @@ An s-expression is a representation of the abstract syntax tree, and the s-expre
 
 ##### Matching a class
 
+`ruby_parser` comes with a class `Sexp::Matcher` which provides a terse syntax that we can use to select nodes from the s-expression tree.
+
+The `Sexp::Matcher` expression that matches any class definition is: `(class ___)`. That expression uses the triple underscore `___` wildcard to match anything following a `class` **type** s-expression.
+
 ##### Matching a class with an explicit parent
+
+The `Sexp::Matcher` expression that matches any class with an explicit parent is: `(class _ (const _) ___)`. This uses the single underscore `_` positional wild card match, and then matches the constant s-expression containing the parent class.
 
 #### Methods that call super, and methods that are super
 

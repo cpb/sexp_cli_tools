@@ -15,5 +15,8 @@ end
 puts parse_file('bicycle.rb').inspect
 puts parse_file('mountain_bike.rb').inspect
 
+CLASS_MATCHER = Sexp::Matcher.parse('(class ___)')
+CLASS_WITH_PARENT_MATCHER = Sexp::Matcher.parse('(class _ (const _) ___)')
+
 require "pry"
 Pry.start
