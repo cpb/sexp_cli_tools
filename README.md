@@ -3,7 +3,7 @@ Educational project exploring the utility in searching and manipulating codebase
 
 ## Inspiration
 
-I once found wide spread use of a "magical" Ruby method which was unnecessary. The intent of this method was to relieve the developer from the repeatition of setting instance variables from method parameters. How this magic method did this was difficult to understand for most. Upon examining this method, I noticed it made costly calls to do at run time what could have been done by a developer with a keyboard, or if you wanted to, with code at load time.
+I once found wide spread use of a "magical" Ruby method which was unnecessary. The intent of this method was to relieve the developer from the repetition of setting instance variables from method parameters. How this magic method did this was difficult to understand for most. Upon examining this method, I noticed it made costly calls to do at run time what could have been done by a developer with a keyboard, or if you wanted to, with code at load time.
 
 I was new to the team and project, and because the use of this method was wide spread, I wanted a systematic and repeatable approach to refactoring it out of existence so that I and my new colleagues could trust the widespread change.
 
