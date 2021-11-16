@@ -3,6 +3,6 @@
 require "bundler/setup"
 
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
-require "sexp_cli_tools"
+require "sexp_cli_tools/cli"
 
-puts "SexpCliTools version: %p" % SexpCliTools::VERSION
+SexpCliTools::Cli.start(ARGV)
