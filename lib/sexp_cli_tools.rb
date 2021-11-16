@@ -9,5 +9,6 @@ module SexpCliTools
   MATCHERS = {
     "child-class" => Sexp::Matcher.parse('(class _ (const _) ___)'),
     "parent-class" => Sexp::Matcher.parse('(class _ [not? (const _)] ___)'),
+    "super-caller" => Matchers::SuperCaller,
   }.freeze
 end
