@@ -74,6 +74,10 @@ The `Sexp::Matcher` expression that matches any class definition is: `(class ___
 
 The `Sexp::Matcher` expression that matches any class with an explicit parent is: `(class _ (const _) ___)`. This uses the single underscore `_` positional wild card match, and then matches the constant s-expression containing the parent class.
 
+##### Matching a class with an implicit parent
+
+It is also possible to include negation in `Sexp::Matcher`. A class with an implicit parent does not have the constant s-expression `(const _)`. Right now, our class s-expression matcher, `(class ___)` matches all our classes. To match only `Bicycle` we must use negation. That s-expression is `(class _ [not? (const _)] ___)`.
+
 #### Methods that call super, and methods that are super
 
 #### Hook methods from super callers
