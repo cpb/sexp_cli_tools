@@ -98,7 +98,7 @@ Setting up a unit test can help close that iteration loop. [Consider the unit te
 Allowing users to experiment with s-expressions might enable exploration and discovery. The `sexp find` command also supports inline s-expressions. Try these in your projects:
 
 - `sexp find '(class ___)'` to find class definitions
-- `sexp find '[include (case ___)]'` to find case statements
+- `sexp find '[child (case ___)]'` to find case statements
 
 #### Hook methods from super callers
 
