@@ -4,9 +4,18 @@ require "aruba"
 describe "SexpCliTools::Cli" do
   include Aruba::Api
 
+  def copy_fixtures_to_workspace
+    Pathname.glob('test/fixtures/**/*').each do |path|
+      relative = path.relative_path_from('test/fixtures').to_s
+      copy "%/#{relative}", relative
+    end
+  end
+
   before do
     setup_aruba
     prepend_environment_variable "PATH", File.expand_path("../../exe:", __dir__)
+
+    copy_fixtures_to_workspace
   end
 
   let(:command_results) do
