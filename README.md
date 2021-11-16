@@ -85,7 +85,7 @@ Knowing the syntax for `Sexp::Matcher` expressions gives us some confidence that
 The `sexp` command offers a convenient shortcut to the `Sexp::Matcher` expressions we'll develop. As we figure out the s-expression matchers along the way, we can add to the list of known matchers to create simple shortcuts, like with the builtin `sexp find child-class` or `sexp find parent-class`.
 
 - Checkout the [tests for examples](https://github.com/cpb/sexp_cli_tools/blob/main/test/sexp_cli_tools/cli_test.rb#L34-L54) of how to test drive your own.
-- Checkout the [implementation](https://github.com/cpb/sexp_cli_tools/blob/find-child-class/lib/sexp_cli_tools.rb#L8-L9) to see how easy it is to add one.
+- Checkout the [implementation](https://github.com/cpb/sexp_cli_tools/blob/main/lib/sexp_cli_tools.rb#L8-L9) to see how easy it is to add one.
 
 #### Methods that call super, and methods that are super
 
