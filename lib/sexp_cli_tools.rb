@@ -8,9 +8,11 @@ require_relative "sexp_cli_tools/matchers/super_caller"
 module SexpCliTools
   class Error < StandardError; end
 
-  MATCHERS = {
-    "child-class" => Sexp::Matcher.parse('(class _ (const _) ___)'),
-    "parent-class" => Sexp::Matcher.parse('(class _ [not? (const _)] ___)'),
-    "super-caller" => Matchers::SuperCaller,
-  }.freeze
+  MATCHERS = Hash
+    .new {|hash, key| hash[key] = Sexp::Matcher.parse(key) }
+    .merge({
+      "child-class" => Sexp::Matcher.parse('(class _ (const _) ___)'),
+      "parent-class" => Sexp::Matcher.parse('(class _ [not? (const _)] ___)'),
+      "super-caller" => Matchers::SuperCaller,
+    })
 end
