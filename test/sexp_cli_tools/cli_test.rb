@@ -19,7 +19,7 @@ describe "SexpCliTools::Cli" do
   subject { command_results }
 
   describe "sexp" do
-    it { _(subject).wont_be :empty? }
+    it { _(subject).must_match /SexpCliTools version: "\d+\.\d+\.\d+"/ }
   end
 
   describe "sexp find child-class" do
