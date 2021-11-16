@@ -10,7 +10,7 @@ module SexpCliTools
 
     desc "find sexp-matcher [**/*.rb]", "Finds Ruby files matching the s-expression matcher in the glob pattern. Defaults to search all Ruby files with the pattern **/*.rb"
     def find(requested_sexp_matcher, glob="**/*.rb")
-      sexp_matcher = SexpCliTools::MATCHERS.fetch(requested_sexp_matcher)
+      sexp_matcher = SexpCliTools::MATCHERS[requested_sexp_matcher]
       Pathname.glob(glob).each do |path|
         puts path.to_s if sexp_matcher.satisfy?(RubyParser.new.parse(path.read))
       end

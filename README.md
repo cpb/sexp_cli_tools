@@ -95,6 +95,11 @@ What isn't show in [the commit which added the `Sexp::Matcher`](https://github.c
 
 Setting up a unit test can help close that iteration loop. [Consider the unit test for `SexpCliTools::Matchers::SuperCaller`](test/sexp_cli_tools/matchers/super_caller_test.rb)
 
+Allowing users to experiment with s-expressions might enable exploration and discovery. The `sexp find` command also supports inline s-expressions. Try these in your projects:
+
+- `sexp find '(class ___)'` to find class definitions
+- `sexp find '[include (case ___)]'` to find case statements
+
 #### Hook methods from super callers
 
 #### Hook calls from super methods
