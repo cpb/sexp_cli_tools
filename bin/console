@@ -2,5 +2,18 @@
 
 require "bundler/setup"
 
+require "ruby_parser"
+
+def fixture_code(basename, relative_path=Pathname.new('test/fixtures/coupling_between_superclasses_and_subclasses'))
+  relative_path.join(basename).read
+end
+
+def parse_file(basename)
+  RubyParser.new.parse(fixture_code(basename))
+end
+
+puts parse_file('bicycle.rb').inspect
+puts parse_file('mountain_bike.rb').inspect
+
 require "pry"
 Pry.start
