@@ -15,7 +15,7 @@ describe "SexpCliTools::Matchers::SuperCaller" do
     _(subject).must_be :satisfy?, with_super_caller
   end
 
-  it "is satisfy by a ruby file with a call to super" do
+  it "is satisfied by a ruby file with a call to super" do
     _(subject).must_be :satisfy?, with_super_caller_no_args
   end
 end
