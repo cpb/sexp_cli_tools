@@ -15,5 +15,6 @@ module SexpCliTools
       "child-class" => Sexp::Matcher.parse('(class _ (const _) ___)'),
       "parent-class" => Sexp::Matcher.parse('(class _ [not? (const _)] ___)'),
       "super-caller" => Matchers::SuperCaller,
+      "method-implementation" => Matchers::MethodImplementation,
     })
 end
