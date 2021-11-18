@@ -101,6 +101,35 @@ Allowing users to experiment with s-expressions might enable exploration and dis
 - `sexp find '[child (class ___)]'` to find class definitions nested in a namespace
 - `sexp find '[child (case ___)]'` to find case statements
 
+So having test driven the development of [the `super-caller` matcher](lib/sexp_cli_tools/matchers/super_caller.rb) next we have to find the methods that respond to `super`.
+
+##### Finding super implementations
+
+So far we've been using `Sexp::Matcher` strings to find quite abstract parts of our code. But, it's completely possible to fill in what in the parts we know that we'd like to find.
+
+- `sexp find '(class :Bicycle ___)'` from my working copy of this project turns up the [test fixture file for `Bicycle`](https://github.com/cpb/sexp_cli_tools/blob/eb6ebe8722cd13cc91ba12bc69380e09c3bdfe0d/test/fixtures/coupling_between_superclasses_and_subclasses/bicycle.rb), as well as the copy of it `aruba` makes in the `tmp/` directory for testing purposes.
+- `sexp find '[child (defn :initialize ___)]'` only turns up the [test fixture file for `RoadBike`](https://github.com/cpb/sexp_cli_tools/blob/eb6ebe8722cd13cc91ba12bc69380e09c3bdfe0d/test/fixtures/coupling_between_superclasses_and_subclasses/test/fixtures/coupling_between_superclasses_and_subclasses/road_bike.rb). I guess it is time to fill in more of our `Bicycle` class!
+
+Finding the super implementation will involve finding a class that contains a method defintion. So far, our matchers haven't taken any parameters. A (naive) matcher for a super implementation might have two parameters, the name of the class we expect to define the method, and the name of the method.
+
+##### Passing matcher parameters
+
+Early on I chose to have the second sequence argument to the command line interface `sexp find` the glob pattern of files to include in the search. However, I want to prioritize matcher parameters for that position now. Although my test coverage didn't include tests for that glob pattern, I did document it.
+
+So, when I [moved that out into the `--include` command line option](https://github.com/cpb/sexp_cli_tools/pull/12/commits/af66f0b7da549426ee0b6444f46b317da279e9a0), that was a breaking change to the public interface. That would necessitate incrementing the major version number according to semantic versioning. I have a hunch that because I'm still in the `0` major release, I could get away with not bumping it. But, I think the `--include` is something I can stick to.
+
+What I remember about semantic versioning is that additions can just be minor version bumps. So, as long as I don't make a backwards incompatible change to the `find` command or the `--include` option I should be good.
+
+Following merge of: [✨ `sexp find method-implementation passed_method` lists files that define the passed method](https://github.com/cpb/sexp_cli_tools/pull/12) I'll release `v1.0.0`! In that PR I chose to do inside-out testing because the `aruba` tests are a bit slow.
+
+I found it helpful to run just the CLI command tests I was working on using the `TEST` and `TESTOPTS` options to the `rake` test tast, like so:
+
+```shell
+rake TEST='test/sexp_cli_tools/cli_test.rb' TESTOPTS="--name=/method-implementation/"
+```
+
+##### Capturing the Superclass name
+
 #### Hook methods from super callers
 
 #### Hook calls from super methods
