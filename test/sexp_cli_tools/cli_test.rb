@@ -71,4 +71,15 @@ describe "SexpCliTools::Cli" do
       _(subject).must_match /road_bike.rb/
     end
   end
+
+  describe "sexp find method-implementation initialize" do
+    it "lists the bicycle.rb and road_bike.rb files, which implements the initialize" do
+      _(subject).must_match /bicycle.rb/
+      _(subject).must_match /road_bike.rb/
+    end
+
+    it "doest not list mountain_bike, doesn't have initialize" do
+      _(subject).wont_match /mountain_bike.rb/
+    end
+  end
 end
