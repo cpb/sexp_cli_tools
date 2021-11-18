@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sexp_cli_tools (0.2.1)
+    sexp_cli_tools (1.0.0)
       ruby_parser (~> 3.18.1)
       thor (~> 1.1.0)
 
