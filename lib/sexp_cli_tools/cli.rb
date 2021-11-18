@@ -14,7 +14,7 @@ module SexpCliTools
       glob = options[:include]
       sexp_matcher = SexpCliTools::MATCHERS[requested_sexp_matcher]
       Pathname.glob(glob).each do |path|
-        puts path.to_s if sexp_matcher.satisfy?(RubyParser.new.parse(path.read))
+        puts path.to_s if sexp_matcher.satisfy?(RubyParser.new.parse(path.read), *matcher_params)
       end
     end
   end
