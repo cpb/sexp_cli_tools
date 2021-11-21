@@ -13,7 +13,7 @@ module SexpCliTools
 
     option :include, default: '**/*.rb'
     desc "find sexp-matcher [--include='**/*.rb']",
-         'Finds Ruby files matching the s-expression matcher in the glob pattern. Defaults to search all Ruby files with the pattern **/*.rb'
+         'Finds Ruby files matching the s-expression matcher in the `include` glob pattern.'
     def find(requested_sexp_matcher, *matcher_params)
       glob = options[:include]
       sexp_matcher = SexpCliTools::MATCHERS[requested_sexp_matcher]
