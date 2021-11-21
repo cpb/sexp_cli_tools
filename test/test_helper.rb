@@ -17,26 +17,36 @@ def parse_file(basename)
 end
 
 module CliTestHelpers
+  module TestVariableSetup
+    def prepare_workspace_hook
+      before do
+        setup_aruba
+        prepend_environment_variable 'PATH', File.expand_path('../../exe:', __dir__)
+
+        copy_fixtures_to_workspace
+      end
+    end
+
+    def setup_command_result_inferred_subject
+      let(:command_results) do
+        run_command_and_stop command.gsub('%/', '')
+        last_command_started.stdout
+      end
+
+      let(:command) { class_name.split('::', 3).last }
+
+      subject { command_results }
+    end
+  end
+
   def self.included(base)
     require 'aruba'
 
     base.send(:include, Aruba::Api)
+    base.send(:extend, TestVariableSetup)
 
-    base.before do
-      setup_aruba
-      prepend_environment_variable 'PATH', File.expand_path('../../exe:', __dir__)
-
-      copy_fixtures_to_workspace
-    end
-
-    base.let(:command_results) do
-      run_command_and_stop command.gsub('%/', '')
-      last_command_started.stdout
-    end
-
-    base.let(:command) { class_name.split('::', 3).last }
-
-    base.subject { command_results }
+    base.prepare_workspace_hook
+    base.setup_command_result_inferred_subject
   end
 
   def copy_fixtures_to_workspace
