@@ -78,7 +78,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  aruba
+  aruba (~> 2.0.0)
   minitest (~> 5.0)
   pry (~> 0.14.1)
   rake (~> 13.0)
