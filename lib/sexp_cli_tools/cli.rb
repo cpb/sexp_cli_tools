@@ -4,6 +4,7 @@ require 'thor'
 require 'sexp_cli_tools'
 
 module SexpCliTools
+  # Top-level command-line interface defining public shell interface.
   class Cli < Thor
     desc 'version', 'Prints version'
     default_command def version

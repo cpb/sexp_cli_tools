@@ -2,6 +2,7 @@
 
 module SexpCliTools
   module Matchers
+    # A matcher that's satisfied by an s-expression containing a method definition.
     class MethodImplementation
       def self.satisfy?(sexp, target_method)
         new(target_method).satisfy?(sexp)
