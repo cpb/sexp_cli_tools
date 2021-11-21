@@ -7,10 +7,10 @@ describe 'SexpCliTools::Matchers::MethodImplementation' do
 
   let(:sexp_with_initialize) { parse_file('road_bike.rb') }
   let(:sexp_without_initialize) do
-    RubyParser.new.parse(<<~END)
+    RubyParser.new.parse(<<~EMPTY_CLASS_DEFINITION)
       class Scooter
       end
-    END
+    EMPTY_CLASS_DEFINITION
   end
 
   describe '.satisfy?(sexp, target_method)' do
