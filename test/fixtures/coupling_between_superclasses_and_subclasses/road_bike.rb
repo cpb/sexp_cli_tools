@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RoadBike < Bicycle
   attr_reader :tape_color
 

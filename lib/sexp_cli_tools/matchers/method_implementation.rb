@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SexpCliTools
   module Matchers
     class MethodImplementation
