@@ -1,14 +1,14 @@
 # frozen_string_literal: true
-#
-$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 
-require "sexp_cli_tools"
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
-require "minitest/autorun"
+require 'sexp_cli_tools'
 
-require "pry"
+require 'minitest/autorun'
 
-def fixture_code(basename, relative_path=Pathname.new('test/fixtures/coupling_between_superclasses_and_subclasses'))
+require 'pry'
+
+def fixture_code(basename, relative_path = Pathname.new('test/fixtures/coupling_between_superclasses_and_subclasses'))
   relative_path.join(basename).read
 end
 

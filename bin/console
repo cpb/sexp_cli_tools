@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require "bundler/setup"
+require 'bundler/setup'
 
-require "ruby_parser"
+require 'ruby_parser'
 
-def fixture_code(basename, relative_path=Pathname.new('test/fixtures/coupling_between_superclasses_and_subclasses'))
+def fixture_code(basename, relative_path = Pathname.new('test/fixtures/coupling_between_superclasses_and_subclasses'))
   relative_path.join(basename).read
 end
 
@@ -20,5 +20,5 @@ CLASS_MATCHER = Sexp::Matcher.parse('(class ___)')
 CLASS_WITH_PARENT_MATCHER = Sexp::Matcher.parse('(class _ (const _) ___)')
 CLASS_WITH_IMPLICIT_PARENT_MATCHER = Sexp::Matcher.parse('(class _ [not? (const _)] ___)')
 
-require "pry"
+require 'pry'
 Pry.start
