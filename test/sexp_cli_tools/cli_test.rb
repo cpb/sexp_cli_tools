@@ -1,87 +1,71 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'aruba'
 
-describe 'SexpCliTools::Cli' do
-  include Aruba::Api
+describe 'sexp' do
+  include CliTestHelpers
 
-  def copy_fixtures_to_workspace
-    Pathname.glob('test/fixtures/**/*').each do |path|
-      relative = path.relative_path_from('test/fixtures').to_s
-      copy "%/#{relative}", relative
-    end
+  it { _(subject).must_match /SexpCliTools version: "\d+\.\d+\.\d+"/ }
+end
+
+describe 'sexp find child-class' do
+  include CliTestHelpers
+
+  it "doesn't match our parent class" do
+    _(subject).wont_match /bicycle.rb/
   end
 
-  before do
-    setup_aruba
-    prepend_environment_variable 'PATH', File.expand_path('../../exe:', __dir__)
+  it 'does match our child class' do
+    _(subject).must_match /mountain_bike.rb/
+    _(subject).must_match /road_bike.rb/
+  end
+end
 
-    copy_fixtures_to_workspace
+describe 'sexp find parent-class' do
+  include CliTestHelpers
+
+  it "doesn't match our child classes" do
+    _(subject).wont_match /mountain_bike.rb/
+    _(subject).wont_match /road_bike.rb/
   end
 
-  let(:command_results) do
-    run_command_and_stop command.gsub('%/', '')
-    last_command_started.stdout
+  it 'does match our parent class' do
+    _(subject).must_match /bicycle.rb/
+  end
+end
+
+describe 'sexp find super-caller' do
+  include CliTestHelpers
+
+  it "doesn't match our parent class" do
+    _(subject).wont_match /bicycle.rb/
   end
 
-  let(:command) { class_name.split('::', 3).last }
+  it 'does match our child class' do
+    _(subject).must_match /mountain_bike.rb/
+    _(subject).must_match /road_bike.rb/
+  end
+end
 
-  subject { command_results }
+describe "sexp find '(class ___)'" do
+  include CliTestHelpers
 
-  describe 'sexp' do
-    it { _(subject).must_match /SexpCliTools version: "\d+\.\d+\.\d+"/ }
+  it 'lists all files with classes defined' do
+    _(subject).must_match /bicycle.rb/
+    _(subject).must_match /mountain_bike.rb/
+    _(subject).must_match /road_bike.rb/
+  end
+end
+
+describe 'sexp find method-implementation initialize' do
+  include CliTestHelpers
+
+  it 'lists the bicycle.rb and road_bike.rb files, which implements the initialize' do
+    _(subject).must_match /bicycle.rb/
+    _(subject).must_match /road_bike.rb/
   end
 
-  describe 'sexp find child-class' do
-    it "doesn't match our parent class" do
-      _(subject).wont_match /bicycle.rb/
-    end
-
-    it 'does match our child class' do
-      _(subject).must_match /mountain_bike.rb/
-      _(subject).must_match /road_bike.rb/
-    end
-  end
-
-  describe 'sexp find parent-class' do
-    it "doesn't match our child classes" do
-      _(subject).wont_match /mountain_bike.rb/
-      _(subject).wont_match /road_bike.rb/
-    end
-
-    it 'does match our parent class' do
-      _(subject).must_match /bicycle.rb/
-    end
-  end
-
-  describe 'sexp find super-caller' do
-    it "doesn't match our parent class" do
-      _(subject).wont_match /bicycle.rb/
-    end
-
-    it 'does match our child class' do
-      _(subject).must_match /mountain_bike.rb/
-      _(subject).must_match /road_bike.rb/
-    end
-  end
-
-  describe "sexp find '(class ___)'" do
-    it 'lists all files with classes defined' do
-      _(subject).must_match /bicycle.rb/
-      _(subject).must_match /mountain_bike.rb/
-      _(subject).must_match /road_bike.rb/
-    end
-  end
-
-  describe 'sexp find method-implementation initialize' do
-    it 'lists the bicycle.rb and road_bike.rb files, which implements the initialize' do
-      _(subject).must_match /bicycle.rb/
-      _(subject).must_match /road_bike.rb/
-    end
-
-    it "doest not list mountain_bike, doesn't have initialize" do
-      _(subject).wont_match /mountain_bike.rb/
-    end
+  it "doest not list mountain_bike, doesn't have initialize" do
+    _(subject).wont_match /mountain_bike.rb/
   end
 end
