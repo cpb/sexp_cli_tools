@@ -221,6 +221,38 @@ I did notice that `ruby_parser` isn't the only tool available to parse ruby into
 
 For now, I'll continue setting up examples to test drive thie *make it work* implementation. The `Bicycle`, `MountainBike` and `RoadBike` examples could be filled in a bit more, so we can observe how our current implementation works when there are multiple methods that call `super` in a single file.
 
+####### Capture groups iteration 2
+
+**Observe**
+
+- Our `satisfy?` method now leverages `Sexp::Matcher#/`
+- `Sexp::Matcher#/` returns an `MatchCollection < Array` of sub-trees
+- In the single result case, the `MatchCollection` elements are the shortest path from the root of the s-expression tree, to the leaf containing the matching s-expression.
+- `Sexp::Matcher#search_each` or `Sexp#search_each` offers a recursive search through the tree.
+- I believe that with the `MatchCollection` interface I could use `Enumerable#slice_after` to group tree walks into the paths to the matching result, with the last node being the specific match.
+- [ ] Goal: support for classes/files with multiple methods calling super
+- [ ] Goal: support for methods with multiple calls to super
+
+**Orient**
+
+- Is the call sequence for the block `#search_each` roughly equivalent to depth first search?
+- What does a `MatchCollection` for a class with multiple methods that call `super` look like?
+- What does a `MatchCollection` for a method that calls super multiple times look like, compared to the call sequence through `#search_each`?
+- Now, we want the name of the method captured, but later we'll want the expression that includes `super`. If we include the method definition in the `Sexp::Matcher` to make capturing the method name easier, will we still need to take a second pass to find the `super` expressions to modify? Likewise with the superclass name.
+- What are all the variations of method definitions that could match a `super` call? Which are the most common or idiomatic?
+
+**Decide**
+
+- Add all the methods that call super to our bikes classes and observe how the tests fail. Use `binding.pry` to observe how to group the matches to find the paths to the calls.
+- Expand the captured data to include the superclass name and the `super` expression, to get more information for considering how to proceed at this iteration.
+- Pull up the development console chain `#search_each` with `#each_with_index` and `puts` each call, compare to `#each_with_index` from a `MatchCollection`
+- Write an `Sexp::Matcher` for `SuperCaller` that includes the method definition, and consider if to find the `super` expression or superclass name we could avoid additional passes at the s-expression with other `Sexp::Matcher`s
+- Scaffold out a new project with the `aruba` acceptance tests and see what its like to use `parser` and it's node matchers, evaluate if their capture groups or parent nodes readily solve this, or just make the problem different.
+
+**Act**
+
+*Try the experiments listed in Decide in fastest to new information order. Feel free to stop when the goals are reached*
+
 ###### Capturing the Superclass name
 
 #### Hook methods from super callers
