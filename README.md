@@ -187,7 +187,19 @@ Given we used test driven development to create our `SuperCaller` we now have a 
       - the error is because of `nil` return `NoMethodError`
   - [ ] Expirement with `Sexp::Matcher#/` and see what we can find in the returned/yielded data.
     - Is an empty `MatchCollection` falsey?
+      - Replace the call to `MATCHER.satisfy?(sexp)` with `MATCHER / sexp`
+        - ...
     - What is the first element of the collection if the `Sexp::Matcher` is only looking any sub-tree with a call to super?
+      - Replace the `SexpMatchData.new(:some_method)` with a call to `binding.pry` and investigate
+      - `MountainBike`
+        - The first element is the whole s-expression input
+        - The second element is the child sub-tree that contains the `super` call, in this case, the spares definition!
+        - The third element is the call sub-tree of the method that contains the `super` call, chaining `merge` off of the return of `super`.
+        - The last element was the matching subtree, just the `s(:zsuper)` for the call to `super` with no arguments
+      - `RoadBike`
+        - The second element is the child sub-tree that contains the `super(args)` call, in this case, a method definition!
+        - The first element is the whole s-expression input.
+        - The last element was the matching subtree, just the `s(:super, s(:lvar, :args))` for the call to `super(args)`.
   - [ ] Iterate on the `SuperCaller::MATCHER` to include a method definition in the search if we need more context to find the method name.
     - If the `Sexp::Matcher` is changed to include a method definition containing a call to super, will the method definition sub-tree be the first element of the `MatchCollection` ?
 
