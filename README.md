@@ -128,7 +128,43 @@ I found it helpful to run just the CLI command tests I was working on using the 
 rake TEST='test/sexp_cli_tools/cli_test.rb' TESTOPTS="--name=/method-implementation/"
 ```
 
-##### Capturing the Superclass name
+##### Capturing data from Matches
+
+I believe it is useful to think of `Sexp::Matcher` patterns as analogous to `Regexp` patterns.
+
+One of the differences is that a `Regexp` matches a pattern in a `String`, [whereas `Sexp::Matcher` matches an s-expressions "as a whole or in a sub-tree"](#todo-link-to-Sexp::Matcher#=~).
+
+Revisiting our example of the empy `Bicycle` class:
+
+``` ruby
+class Bicycle
+
+end
+```
+
+```ruby
+s(:class, :Bicycle, nil)
+```
+
+We can consider that a `Regexp` `/class \w+/` matches part of the `String` of the contents of the file, and the `Sexp::Matcher` `(class _ ___)` similarly matches a sub-tree of the s-expression.
+
+With `Sexp::Matcher` we could match the whole s-expression tree with: `(class _ nil)`.
+
+A feature of `Regexp` that I think would get us closer to our goals is something analogous to `MatchData`. `MatchData` returned from a `Regexp` match captures the fragment in the `String` the `Regexp` matched.
+
+Our primative `class` statement `Regexp`'s `MatchData` would include `"class Bicycle"`. This is roughly similar to using `Sexp::Matcher#/` or `Sexp::Matcher#search_each` which return or yeild the matching sub-trees.
+
+Returned `MatchData` also includes any **capture groups** the `Regexp` matched. If we change our primative `Regexp` to use a **named capture group** we'd get a `Hash` like mapping for our named captured groups to the fragments they captured. So, `/class (?<class_name>\w+)/` would return a `MatchData` with `match_data[:class_name] == 'Bicycle'`
+
+We need to be able to capture the name of the method that calls super, in order to find the correct method implementation in the superclass to modify with a hook method call. We also need to find the name of the superclass for the subclass with a method that calls super.
+
+We'll next create an API inspired by `MatchData` and named capture groups. Then, we'll modify our `super-caller` matcher to capture the name of the method and the name of the superclass.
+
+###### Capturing the method name of a super caller
+
+Given we used test driven development to create our `SuperCaller` we now have a good basis from which we can explore the impacts of enhancing `#satisfy?` to return so-called match data.
+
+###### Capturing the Superclass name
 
 #### Hook methods from super callers
 
