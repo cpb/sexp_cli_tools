@@ -185,10 +185,11 @@ Given we used test driven development to create our `SuperCaller` we now have a 
     - Try a betterspecs.org style nested describe focusing on the `#method_name` capture data
       - 2 failures and 1 error
       - the error is because of `nil` return `NoMethodError`
-  - [ ] Expirement with `Sexp::Matcher#/` and see what we can find in the returned/yielded data.
+  - [x] Expirement with `Sexp::Matcher#/` and see what we can find in the returned/yielded data.
     - Is an empty `MatchCollection` falsey?
       - Replace the call to `MATCHER.satisfy?(sexp)` with `MATCHER / sexp`
-        - ...
+        - An empty `MatchCollection` is not falsey
+        - Change the `if ... satisfy?` to `unless ... / ... empty?`
     - What is the first element of the collection if the `Sexp::Matcher` is only looking any sub-tree with a call to super?
       - Replace the `SexpMatchData.new(:some_method)` with a call to `binding.pry` and investigate
       - `MountainBike`
@@ -200,8 +201,11 @@ Given we used test driven development to create our `SuperCaller` we now have a 
         - The second element is the child sub-tree that contains the `super(args)` call, in this case, a method definition!
         - The first element is the whole s-expression input.
         - The last element was the matching subtree, just the `s(:super, s(:lvar, :args))` for the call to `super(args)`.
-  - [ ] Iterate on the `SuperCaller::MATCHER` to include a method definition in the search if we need more context to find the method name.
+  - [x] Iterate on the `SuperCaller::MATCHER` to include a method definition in the search if we need more context to find the method name.
     - If the `Sexp::Matcher` is changed to include a method definition containing a call to super, will the method definition sub-tree be the first element of the `MatchCollection` ?
+      - It will likely be the last element, based on above observations.
+      - However, maybe we could traverse a portion of the `MatchCollection` looking for the nearest method definition!
+  - [ ] `MatchCollection` also responds to `/`, what is the resulting `MatchCollection` if we drop the first and last elements and look for the first method definition?
 
 ###### Capturing the Superclass name
 

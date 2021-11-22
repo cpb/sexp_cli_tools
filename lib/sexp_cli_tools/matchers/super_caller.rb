@@ -11,7 +11,9 @@ module SexpCliTools
       SexpMatchData = Struct.new(:method_name)
 
       def self.satisfy?(sexp)
-        SexpMatchData.new(:some_method) if MATCHER.satisfy?(sexp)
+        return if (matches = MATCHER / sexp).empty?
+
+        SexpMatchData.new(:some_method)
       end
     end
   end
