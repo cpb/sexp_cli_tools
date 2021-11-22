@@ -2,12 +2,18 @@
 
 require 'test_helper'
 
+module SuperCallerExamples
+  def self.included(base)
+    base.let(:without_super_caller) { parse_file('bicycle.rb') }
+    base.let(:with_super_caller) { parse_file('road_bike.rb') }
+    base.let(:with_super_caller_no_args) { parse_file('mountain_bike.rb') }
+  end
+end
+
 describe 'SexpCliTools::Matchers::SuperCaller' do
   subject { SexpCliTools::Matchers::SuperCaller }
 
-  let(:without_super_caller) { parse_file('bicycle.rb') }
-  let(:with_super_caller) { parse_file('road_bike.rb') }
-  let(:with_super_caller_no_args) { parse_file('mountain_bike.rb') }
+  include SuperCallerExamples
 
   it 'is not satisfied by a ruby file without a method calling super' do
     _(subject).wont_be :satisfy?, without_super_caller
@@ -19,5 +25,29 @@ describe 'SexpCliTools::Matchers::SuperCaller' do
 
   it 'is satisfied by a ruby file with a call to super' do
     _(subject).must_be :satisfy?, with_super_caller_no_args
+  end
+end
+
+describe 'SexpMatchData#method_name' do
+  subject { SexpCliTools::Matchers::SuperCaller.satisfy?(sexp).method_name }
+
+  include SuperCallerExamples
+
+  describe 'with an sexp with a call to super' do
+    let(:sexp) { with_super_caller_no_args }
+
+    it { _(subject).must_equal :spares }
+  end
+
+  describe 'with an sexp with a call to super passing args' do
+    let(:sexp) { with_super_caller }
+
+    it { _(subject).must_equal :initialize }
+  end
+
+  describe 'with an sexp without a call to super' do
+    let(:sexp) { without_super_caller }
+
+    it { assert_nil subject }
   end
 end

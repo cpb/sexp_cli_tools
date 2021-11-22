@@ -181,8 +181,10 @@ Given we used test driven development to create our `SuperCaller` we now have a 
       - [ ] Can we always return an object, or if there is no match, do we need to return something that is already falsey? Can we make an object which is falsey?
         - Not sure if this is valuable
 - [ ] How can we select the part of the s-expression that contains the method name?
-  - [ ] Setup a failing test expecting a specific method name
+  - [x] Setup a failing test expecting a specific method name
     - Try a betterspecs.org style nested describe focusing on the `#method_name` capture data
+      - 2 failures and 1 error
+      - the error is because of `nil` return `NoMethodError`
   - [ ] Expirement with `Sexp::Matcher#/` and see what we can find in the returned/yielded data.
     - Is an empty `MatchCollection` falsey?
     - What is the first element of the collection if the `Sexp::Matcher` is only looking any sub-tree with a call to super?
