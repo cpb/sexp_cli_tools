@@ -29,7 +29,7 @@ describe 'SexpCliTools::Matchers::SuperCaller' do
 end
 
 describe 'SexpMatchData#method_name' do
-  subject { SexpCliTools::Matchers::SuperCaller.satisfy?(sexp).method_name }
+  subject { SexpCliTools::Matchers::SuperCaller.satisfy?(sexp)&.method_name }
 
   include SuperCallerExamples
 

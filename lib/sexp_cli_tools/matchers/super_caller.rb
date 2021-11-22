@@ -13,7 +13,19 @@ module SexpCliTools
       def self.satisfy?(sexp)
         return if (matches = MATCHER / sexp).empty?
 
-        SexpMatchData.new(:some_method)
+        _sexp, *in_between, _matched_call = matches
+
+        method_definition = Sexp::Matcher.parse('(defn _ ___)')
+
+        method_name = in_between.map do |sub_expr|
+          next if (sub_matches = method_definition / sub_expr).empty?
+
+          (_defn, name), *_args_and_implementation = sub_matches
+
+          break name
+        end
+
+        SexpMatchData.new(method_name)
       end
     end
   end

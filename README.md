@@ -180,7 +180,8 @@ Given we used test driven development to create our `SuperCaller` we now have a 
         - If our `Sexp::Matcher` is satisfied by the passed in s-expression, return a new instance of that `Struct`
       - [ ] Can we always return an object, or if there is no match, do we need to return something that is already falsey? Can we make an object which is falsey?
         - Not sure if this is valuable
-- [ ] How can we select the part of the s-expression that contains the method name?
+        - Would allow me to expect that the return could respond to captured data names, even if it didn't match. Don't know if that is actually a benefit.
+- [x] How can we select the part of the s-expression that contains the method name?
   - [x] Setup a failing test expecting a specific method name
     - Try a betterspecs.org style nested describe focusing on the `#method_name` capture data
       - 2 failures and 1 error
@@ -205,7 +206,10 @@ Given we used test driven development to create our `SuperCaller` we now have a 
     - If the `Sexp::Matcher` is changed to include a method definition containing a call to super, will the method definition sub-tree be the first element of the `MatchCollection` ?
       - It will likely be the last element, based on above observations.
       - However, maybe we could traverse a portion of the `MatchCollection` looking for the nearest method definition!
-  - [ ] `MatchCollection` also responds to `/`, what is the resulting `MatchCollection` if we drop the first and last elements and look for the first method definition?
+  - [x] `MatchCollection` also responds to `/`, what is the resulting `MatchCollection` if we drop the first and last elements and look for the first method definition?
+    - I was surprised that I couldn't get `/` off of a new `MatchCollection` to work.
+    - I achieved to use `#find` with `satisfy?` on a specific `Sexp::Matcher`
+    - I can use `Array` unpacking/destructuring to grab the method name
 
 ###### Capturing the Superclass name
 
