@@ -164,7 +164,9 @@ We'll next create an API inspired by `MatchData` and named capture groups. Then,
 
 Given we used test driven development to create our `SuperCaller` we now have a good basis from which we can explore the impacts of enhancing `#satisfy?` to return so-called match data.
 
-- [ ] Will our `wont_be :satisfy?` or `must_be :satisfy?` expectations break if we return something different?
+####### Experimentation notes
+
+- [x] Will our `wont_be :satisfy?` or `must_be :satisfy?` expectations break if we return something different?
   - Right now `SexpCliTools::Matchers::SuperCaller` isn't a class we've defined, but a simple instance of `Sexp::Matcher`
     1. Refactor to create a class that passes the current tests.
       - Change the definition to be a class with the same name
@@ -178,7 +180,7 @@ Given we used test driven development to create our `SuperCaller` we now have a 
         - **Yes** an instance of most objects is *truthy*.
         - Define a `Struct` internal to our `SuperCaller` matcher
         - If our `Sexp::Matcher` is satisfied by the passed in s-expression, return a new instance of that `Struct`
-      - [ ] Can we always return an object, or if there is no match, do we need to return something that is already falsey? Can we make an object which is falsey?
+      - [x] Can we always return an object, or if there is no match, do we need to return something that is already falsey? Can we make an object which is falsey?
         - Not sure if this is valuable
         - Would allow me to expect that the return could respond to captured data names, even if it didn't match. Don't know if that is actually a benefit.
 - [x] How can we select the part of the s-expression that contains the method name?
@@ -210,6 +212,14 @@ Given we used test driven development to create our `SuperCaller` we now have a 
     - I was surprised that I couldn't get `/` off of a new `MatchCollection` to work.
     - I achieved to use `#find` with `satisfy?` on a specific `Sexp::Matcher`
     - I can use `Array` unpacking/destructuring to grab the method name
+
+-----
+
+For now, our initial implementation of capturing data relevant to our matcher works. We likely need support for multiple matches within the same file. Still, I have a hunch that the affordances that `Sexp::Matcher#/` provides will enable composition of matchers and captured data, which I hope means it will remain relatively easy.
+
+I did notice that `ruby_parser` isn't the only tool available to parse ruby into s-expressions or abstract syntax trees. `RuboCop` is built on the `parser` and `ast` gem. `parser` has node matching syntax which supports, among other things, capture groups. It could be an interesting exercise to refactor our current implementation to enable swapping in an alternate parser library.
+
+For now, I'll continue setting up examples to test drive thie *make it work* implementation. The `Bicycle`, `MountainBike` and `RoadBike` examples could be filled in a bit more, so we can observe how our current implementation works when there are multiple methods that call `super` in a single file.
 
 ###### Capturing the Superclass name
 
