@@ -164,6 +164,15 @@ We'll next create an API inspired by `MatchData` and named capture groups. Then,
 
 Given we used test driven development to create our `SuperCaller` we now have a good basis from which we can explore the impacts of enhancing `#satisfy?` to return so-called match data.
 
+- [ ] Will our `wont_be :satisfy?` or `must_be :satisfy?` expectations break if we return something different?
+  - Right now `SexpCliTools::Matchers::SuperCaller` isn't a class we've defined, but a simple instance of `Sexp::Matcher`
+    1. Refactor to create a class that passes the current tests.
+      - Change the definition to be a class with the same name
+      - Capture the `Sexp::Matcher` instance in a class constant
+      - Define a class method `satisfy?` that calls `satisfy?` on the class constant `Sexp::Matcher`
+    2. Change the `#satisfy?` return value
+- [ ] How can we select the part of the s-expression that contains the method name?
+
 ###### Capturing the Superclass name
 
 #### Hook methods from super callers
