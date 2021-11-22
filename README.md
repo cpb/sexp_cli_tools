@@ -171,6 +171,15 @@ Given we used test driven development to create our `SuperCaller` we now have a 
       - Capture the `Sexp::Matcher` instance in a class constant
       - Define a class method `satisfy?` that calls `satisfy?` on the class constant `Sexp::Matcher`
     2. Change the `#satisfy?` return value
+      - [x] What is the returned by `Sexp::Matcher#satisfy?` ?
+        - Calling `#tap` on the last call in a method and calling `binding.pry` is a handy way to check out what a method will return.
+        - I saw `true` or `false`
+      - [x] If we return an instance of a `Struct` with fields for the data we want to capture, will it still pass?
+        - **Yes** an instance of most objects is *truthy*.
+        - Define a `Struct` internal to our `SuperCaller` matcher
+        - If our `Sexp::Matcher` is satisfied by the passed in s-expression, return a new instance of that `Struct`
+      - [ ] Can we always return an object, or if there is no match, do we need to return something that is already falsey? Can we make an object which is falsey?
+        - Not sure if this is valuable
 - [ ] How can we select the part of the s-expression that contains the method name?
 
 ###### Capturing the Superclass name

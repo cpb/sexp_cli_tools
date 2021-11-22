@@ -8,8 +8,10 @@ module SexpCliTools
       # zsuper I noticed while simplifying the examples
       MATCHER = Sexp::Matcher.parse('[child (super ___)]') | Sexp::Matcher.parse('[child (zsuper)]')
 
+      SexpMatchData = Struct.new(:method_name)
+
       def self.satisfy?(sexp)
-        MATCHER.satisfy?(sexp)
+        SexpMatchData.new(:some_method) if MATCHER.satisfy?(sexp)
       end
     end
   end
