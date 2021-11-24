@@ -329,7 +329,9 @@ Ryan was kind enough to point me towards [`MethodBasedSexpProcessor`](http://doc
 I started by choosing a small change, adding failing tests for `#method_name`. I don't mind continuing to support `#method_name` for this `SexpCliTools::Matchers::SuperCaller` class, but the thing that best captures what I need is `super_signature`
 
 1. Refactor to `MethodBasedSexpProcessor`
-  - [ ] Change the superclass of `SexpCliTools::Matchers::SuperCaller` to `MethodBasedSexpProcessor`
+  - [x] Change the superclass of `SexpCliTools::Matchers::SuperCaller` to `MethodBasedSexpProcessor`
+    - need to `require 'sexp_processor'`
+    - [ ] should I make this dependency explicit in the gemspec, or rely on the fact that `ruby_parser` depends on it?
   - [ ] Implement the `process_defn` and `process_defs` methods to:
     - call `super` passing in a block
     - in the block, check if the rest of the expression matches a call to super
