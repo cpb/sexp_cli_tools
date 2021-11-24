@@ -286,16 +286,45 @@ Ryan was kind enough to point me towards [`MethodBasedSexpProcessor`](http://doc
 
 - Is there a Ruby or Rdoc convention for including the superclass in a subclass's method signature?
 - When a subclass of `MethodBasedSexpProcessor` encounters a `(class _ (const _) ___)` will `process_class` consume the type and subclass name, or will it call `process_const` after the `process_class` hook adds to the `MethodBasedSexpProcessor#class_stack` ?
+  - it [will `yield`](https://github.com/seattlerb/sexp_processor/blob/master/lib/sexp_processor.rb#L607) the remaining expression in a call to `super` with a block
+  - it [will continue proccessing](https://github.com/seattlerb/sexp_processor/blob/master/lib/sexp_processor.rb#L609) the remaining expression if `super` is called without a block
 - Does it make sense to continue relying on `Sexp::Matcher#/` or can I refactor that completely to use a `MethodBasedSexpProcessor` subclass only?
+  - A subclass of `MethodBasedSexpProcessor` can do this job
+  - If `Sexp::Matcher` had "capture groups" like in `processor`/`ast` then could make a pattern that matches on class, captures the superclass name, matches on define method, captures the method name, and then captures the expression which includes `super` and that's your first pass.
 - What I remember of reading the inline comments in [`lib/sexp_processor.rb`](https://github.com/seattlerb/sexp_processor/blob/master/lib/sexp_processor.rb) is that `rewrite_*` hooks rewrite, so [why does it look like `process_` hooks can too?](https://github.com/seattlerb/sexp_processor/blob/master/test/test_sexp_processor.rb#L109-L111)
+  - Modern `SexpProcessor` design favours layering over preparing in a `rewrite_*` hook.
+  - `ruby2c` or `ruby2ruby` probably contain the only valid examples of `rewrite_*` hooks.
 
 **Decide**
 
+- Test drive `#super_signature` on a sublcass of `MethodBasedSexpProcessor`
 - Nerd party with Ryan Davis
 
 **Act**
 
 **Nerd party with Ryan Davis**
+
+- What is the difference between process and rewrite?
+  - rewrite: lighter weight for normalization
+    - not meant for real work
+    - IE: ensure `if` have both `true` and `false`
+    - Old project `ParseTree` used it a lot
+    - Somewhat in `ruby2c`
+    - Is actually used in `ruby2ruby`
+      - Probably only valid examples
+    - New project: probably wouldn't use rewrite
+      - Would have processor layers
+  - process: for the real stuff
+- `MethodBasedSexpProcessor#process_class`, does it hook `process_const` or does it handle that part of the s-expression?
+  - shifts off the node type, shift off the class name
+  - would process the superclass const
+- There was a paper that tried getting from a diff to an ast transformation
+- Maybe wrote a SexpDiff?
+  - Racket has some Sexp stuff which might include Sexp diffs
+  - Maybe port it over?
+  - Racket project https://docs.racket-lang.org/sexp-diff/index.html
+
+**Test drive `#super_signature` on a sublcass of `MethodBasedSexpProcessor`**
 
 - …
 
