@@ -248,12 +248,43 @@ For now, I'll continue setting up examples to test drive thie *make it work* imp
 - Pull up the development console chain `#search_each` with `#each_with_index` and `puts` each call, compare to `#each_with_index` from a `MatchCollection`
 - Write an `Sexp::Matcher` for `SuperCaller` that includes the method definition, and consider if to find the `super` expression or superclass name we could avoid additional passes at the s-expression with other `Sexp::Matcher`s
 - Scaffold out a new project with the `aruba` acceptance tests and see what its like to use `parser` and it's node matchers, evaluate if their capture groups or parent nodes readily solve this, or just make the problem different.
+- Ask Ryan Davis, author of `ruby_parser` and `SexpProcessor`
 
 **Act**
 
-*Try the experiments listed in Decide in fastest to new information order. Feel free to stop when the goals are reached*
+###### Ask Ryan Davis, author of `ruby_parser` and `SexpProcessor`
+
+I had been sharing a little bit of this work with SeattleRB, and the first reaction I got was surprise that I was figuring out `Sexp::Matcher`. When I describe my goal as trying to guess `Bicycle#spare_parts` from:
+
+```ruby
+class MountainBike < Bicycle
+  def spare_parts
+    super.merge({fork: "suspended"})
+  end
+end
+```
+
+Ryan was kind enough to point me towards [`MethodBasedSexpProcessor`](http://docs.seattlerb.org/sexp_processor/MethodBasedSexpProcessor.html) and after reading some of its, and the containing, source code, it has dawned on me that there's a different way to tackle this problem.
 
 ###### Capturing the Superclass name
+
+**Observe**
+
+- [`SexpProcessor`](http://docs.seattlerb.org/sexp_processor/SexpProcessor.html) sets up hook methods to call as it traverses an AST.
+- The hook methods have a `process` and `rewrite` form, and they are specific to an `sexp_type`. IE: `process_call` or `rewrite_call`, or `process_zsuper` and `rewrite_zsuper`.
+- Subclasses of `SexpProcessor` implement those hook methods to perform "processing" or rewriting when a node of a `sexp_type` is encountered.
+- [`MethodBasedSexpProcessor`](http://docs.seattlerb.org/sexp_processor/MethodBasedSexpProcessor.html) implements `process_class`, `process_module`, `process_defn` and `process_defs` … if you choose to need those methods, then you *must* call `super` …
+- `MethodBasedSexpProcessor` builds up a context stack, capturing the namespace as it descends into nested module(s), class(es) or singleton class, and finally, the method.
+- [ ] Goal: include superclass in the context
+- [ ] Goal: learn how to build an `SexpProcessor` subclass that'll pass the current tests: provide a reader to the method name that calls super
+- [ ] Goal: add to the test coverage to capture the superclass name too
+- [ ] Goal: finish the PR by providing a flag that outputs the captured data in `Superclass#method_name` notation.
+
+**Orient**
+
+**Decide**
+
+**Act**
 
 #### Hook methods from super callers
 
