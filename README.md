@@ -332,11 +332,16 @@ I started by choosing a small change, adding failing tests for `#method_name`. I
   - [x] Change the superclass of `SexpCliTools::Matchers::SuperCaller` to `MethodBasedSexpProcessor`
     - need to `require 'sexp_processor'`
     - [ ] should I make this dependency explicit in the gemspec, or rely on the fact that `ruby_parser` depends on it?
+  - [x] What is the entrypoint to a `SexpProcessor` ?
+    - [`.new#process(sexp)`](https://github.com/seattlerb/sexp_processor/blob/master/test/test_sexp_processor.rb#L104-L111)
+    - [x] How bad do the tests fail if I just use the default behaviour of `MethodBasedSexpProcessor#method_locations` ?
+      - Obviously the hash is wrong, so lets just start by munging with the keys.
+      - This is really close!
   - [ ] Implement the `process_defn` and `process_defs` methods to:
-    - call `super` passing in a block
-    - in the block, check if the rest of the expression matches a call to super
-    - capture that method name in a `SexpMatchData`
-    - have the return value of `satisfy?` remain that `SexpMatchData` instance
+    - [x] call `super` passing in a block
+    - [x] in the block, check if the rest of the expression matches a call to super
+    - [ ] capture that method name in a `SexpMatchData`
+    - [x] have the return value of `satisfy?` remain that `SexpMatchData` instance
 2. Capture the superclass
   - [ ] Add failing test coverage for `super_signature`
   - [ ] Implement the `process_class` methods to:

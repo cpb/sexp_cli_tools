@@ -13,21 +13,26 @@ module SexpCliTools
       SexpMatchData = Struct.new(:method_name)
 
       def self.satisfy?(sexp)
-        return if (matches = MATCHER / sexp).empty?
+        processor = new
+        processor.process(sexp)
 
-        _sexp, *in_between, _matched_call = matches
+        captured_data = processor
+          .method_locations
+          .map do |signature, location|
+            SexpMatchData.new(signature.split('#').last.to_sym)
+          end
 
-        method_definition = Sexp::Matcher.parse('(defn _ ___)')
+        captured_data.first if processor.matched?
+      end
 
-        method_name = in_between.map do |sub_expr|
-          next if (sub_matches = method_definition / sub_expr).empty?
-
-          (_defn, name), *_args_and_implementation = sub_matches
-
-          break name
+      def process_defn(exp)
+        super do
+          @matched ||= exp.satisfy?(MATCHER)
         end
+      end
 
-        SexpMatchData.new(method_name)
+      def matched?
+        @matched
       end
     end
   end
