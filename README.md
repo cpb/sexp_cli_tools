@@ -279,12 +279,25 @@ Ryan was kind enough to point me towards [`MethodBasedSexpProcessor`](http://doc
 - [ ] Goal: learn how to build an `SexpProcessor` subclass that'll pass the current tests: provide a reader to the method name that calls super
 - [ ] Goal: add to the test coverage to capture the superclass name too
 - [ ] Goal: finish the PR by providing a flag that outputs the captured data in `Superclass#method_name` notation.
+- After calls to `MethodBasedSexpProcessor#in_method` the `MethodBasedSexpProcessor` instance is modified. The reader `MethodBasedSexpProcessor#method_locations` [returns a map of rdoc method signatures to filename and line numbers.](https://github.com/seattlerb/sexp_processor/blob/master/test/test_sexp_processor.rb#L340)
+- [`MethodBasedSexpProcessor#signature`](https://github.com/seattlerb/sexp_processor/blob/master/test/test_sexp_processor.rb#L394) reduces the class and method stack to the current `ClassName#method_name`
 
 **Orient**
 
+- Is there a Ruby or Rdoc convention for including the superclass in a subclass's method signature?
+- When a subclass of `MethodBasedSexpProcessor` encounters a `(class _ (const _) ___)` will `process_class` consume the type and subclass name, or will it call `process_const` after the `process_class` hook adds to the `MethodBasedSexpProcessor#class_stack` ?
+- Does it make sense to continue relying on `Sexp::Matcher#/` or can I refactor that completely to use a `MethodBasedSexpProcessor` subclass only?
+- What I remember of reading the inline comments in [`lib/sexp_processor.rb`](https://github.com/seattlerb/sexp_processor/blob/master/lib/sexp_processor.rb) is that `rewrite_*` hooks rewrite, so [why does it look like `process_` hooks can too?](https://github.com/seattlerb/sexp_processor/blob/master/test/test_sexp_processor.rb#L109-L111)
+
 **Decide**
 
+- Nerd party with Ryan Davis
+
 **Act**
+
+**Nerd party with Ryan Davis**
+
+- …
 
 #### Hook methods from super callers
 
