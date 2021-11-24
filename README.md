@@ -326,7 +326,22 @@ Ryan was kind enough to point me towards [`MethodBasedSexpProcessor`](http://doc
 
 **Test drive `#super_signature` on a sublcass of `MethodBasedSexpProcessor`**
 
-- …
+I started by choosing a small change, adding failing tests for `#method_name`. I don't mind continuing to support `#method_name` for this `SexpCliTools::Matchers::SuperCaller` class, but the thing that best captures what I need is `super_signature`
+
+1. Refactor to `MethodBasedSexpProcessor`
+  - [ ] Change the superclass of `SexpCliTools::Matchers::SuperCaller` to `MethodBasedSexpProcessor`
+  - [ ] Implement the `process_defn` and `process_defs` methods to:
+    - call `super` passing in a block
+    - in the block, check if the rest of the expression matches a call to super
+    - capture that method name in a `SexpMatchData`
+    - have the return value of `satisfy?` remain that `SexpMatchData` instance
+2. Capture the superclass
+  - [ ] Add failing test coverage for `super_signature`
+  - [ ] Implement the `process_class` methods to:
+    - call `super` passing in a block
+    - in the block, check if the next expression is a `nil` or providing a superclass
+    - add `Object` to the list of superclass if `nil`
+    - add the superclass expression to the list of superclasses otherwise
 
 #### Hook methods from super callers
 
