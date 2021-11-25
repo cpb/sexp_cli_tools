@@ -1,136 +1,55 @@
-# sexp_cli_tools
-Educational project exploring the utility in searching and manipulating codebases using S-expressions.
+# SexpCliTools
 
-## Inspiration
+In this project I am learning and exploring how to create a refactoring tool. The first refactoring tool I wrote in private, and scratched the surface on `SexpProcessor` capabilities. For this refactoring tool, I'm retracing my steps, and taking on a new refactoring goal.
 
-I once found wide spread use of a "magical" Ruby method which was unnecessary. The intent of this method was to relieve the developer from the repetition of setting instance variables from method parameters. How this magic method did this was difficult to understand for most. Upon examining this method, I noticed it made costly calls to do at run time what could have been done by a developer with a keyboard, or if you wanted to, with code at load time.
+This project focuses on the hook method refactoring described in Chapter 6 of Practical Object-Oriented Design in Ruby by Sandi Metz. In Chapter 6, we are presented with a `Bicycle`, `MountainBike` and `RoadBike` class, with the two specialized bikes calling `super` in a few of their methods. These `super` calls couple `MountainBike` and `RoadBike` to `Bicycle` by requiring them to know the details of the algorithm invoked by `super`. With a hook method refactor, now `Bicycle` can expect that local customizations of `Bicycle` behaviour are fulfilled by subclasses implementing hook methods, which `Bicycle` then calls.
 
-I was new to the team and project, and because the use of this method was wide spread, I wanted a systematic and repeatable approach to refactoring it out of existence so that I and my new colleagues could trust the widespread change.
+Within the project wiki are my exploratory research notes. I am experimenting with writing as I work. Some of the writing helps me clarify my thinking, some is drafting of content for future posts, and some help me restore state when I change context.
 
-## Concrete Examples We Can All Learn From
+Part of my learning process includes creating a tool that myself and others can use to improve their understanding of, in this case, refactoring tools. While this is a gem, depending on your needs, it might make sense to just go with the *install it yourself* option below.
 
-### Decoupling Subclasses Using Hook Messages
+## Installation
 
-In Chapter 6 of Practical Object-Oriented Design in Ruby by Sandi Metz, part of the discussion is focused on finding the ideal coupling between child and parent classes. One proposal introduced in that chapter is to use hook methods, instead of calling super.
-
-Lets imagine a scenario where we have achieved total consensus in an organization, and the new direction is to dogmatically use hook methods, instead of calling super.
-
-#### Goal
-
-- Replace methods that call super with a hook method
-- Modify parent class' implementation of the supered method to call hook methods
-
-#### Initial state
-
-We will begin with the classes [`Bicycle`](test/fixtures/coupling_between_superclasses_and_subclasses/bicycle.rb), [`RoadBike`](test/fixtures/coupling_between_superclasses_and_subclasses/road_bike.rb) and [`MountainBike`](test/fixtures/coupling_between_superclasses_and_subclasses/mountain_bike.rb). We will build them up to  the state from **Managing Coupling Between Superclasses and Subclasses** until we can recognize the important parts of the "discernible pattern."
-
-#### Milestones
-
-Things we must be able to interogate about this code:
-- Which are the children, and which is the parent class?
-- Which methods call super, and which is the method that responds to super?
-- What in each method that calls super needs to be in the respective hook method?
-- What change needs to occur in the method responding to super to leverage the hook methods?
-
-#### Finding the parent of child classes
-
-An s-expression for an empty class in Ruby, as parsed by `ruby_parser`, looks like this:
-
-``` ruby
-class Bicycle
-
-end
-```
+Add this line to your application's Gemfile:
 
 ```ruby
-s(:class, :Bicycle, nil)
+gem 'sexp_cli_tools'
 ```
 
-An s-expression has a **type** and a **body**. The above s-expression's **type** is `:class` and the body is `s(:Bicycle, nil)`.
+And then execute:
 
-An s-expression for an empty class with a parent looks like this:
+    $ bundle install
 
-``` ruby
-class MountainBike < Bicycle
+Or install it yourself as:
 
-end
-```
+    $ gem install sexp_cli_tools
 
-```ruby
-s(:class, :MountainBike, s(:const, Bicycle))
-```
+## Usage
 
-This s-expression's **type** is still `:class`, but the `body` is: `s(:MountainBike, s(:const, :Bicycle))`.
+`sexp find` is the main command-line interface, and it accepts an `Sexp::Matcher.parse` compatible string, and an optional `--include` flag to specify files to limit the search to. By default, `sexp find` will search all `**/*.rb` files.
 
-An s-expression is a representation of the abstract syntax tree, and the s-expressions generated by `ruby_parser` use this `sexp_body` recursion to create that tree.
-
-##### Matching a class
-
-`ruby_parser` comes with a class `Sexp::Matcher` which provides a terse syntax that we can use to select nodes from the s-expression tree.
-
-The `Sexp::Matcher` expression that matches any class definition is: `(class ___)`. That expression uses the triple underscore `___` wildcard to match anything following a `class` **type** s-expression.
-
-##### Matching a class with an explicit parent
-
-The `Sexp::Matcher` expression that matches any class with an explicit parent is: `(class _ (const _) ___)`. This uses the single underscore `_` positional wild card match, and then matches the constant s-expression containing the parent class.
-
-##### Matching a class with an implicit parent
-
-It is also possible to include negation in `Sexp::Matcher`. A class with an implicit parent does not have the constant s-expression `(const _)`. Right now, our class s-expression matcher, `(class ___)` matches all our classes. To match only `Bicycle` we must use negation. That s-expression is `(class _ [not? (const _)] ___)`.
-
-##### Capturing what we've learned in a tool that people can use
-
-Knowing the syntax for `Sexp::Matcher` expressions gives us some confidence that we can start iterating on a tool to help us achieve our goal. The implicit expectation in the project name is that a command line interface is provided. To complete an initial release of a command line tool, we'll use the rubygem `aruba` to help with test setup and teardown.
-
-The `sexp` command offers a convenient shortcut to the `Sexp::Matcher` expressions we'll develop. As we figure out the s-expression matchers along the way, we can add to the list of known matchers to create simple shortcuts, like with the builtin `sexp find child-class` or `sexp find parent-class`.
-
-- Checkout the [tests for examples](https://github.com/cpb/sexp_cli_tools/blob/main/test/sexp_cli_tools/cli_test.rb#L34-L54) of how to test drive your own.
-- Checkout the [implementation](https://github.com/cpb/sexp_cli_tools/blob/main/lib/sexp_cli_tools.rb#L8-L9) to see how easy it is to add one.
-
-#### Methods that call super, and methods that are super
-
-##### Iterating on figuring out `Sexp::Matcher` patterns
-
-What isn't shown in [the commit which added the `Sexp::Matcher`](https://github.com/cpb/sexp_cli_tools/commit/34db6012b03f705b1d9c23025d3636fbf9d801dd) is the trial and error in the console trying to remember the terse rules.
-
-Setting up a unit test can help close that iteration loop. [Consider the unit test for `SexpCliTools::Matchers::SuperCaller`](test/sexp_cli_tools/matchers/super_caller_test.rb)
-
-Allowing users to experiment with s-expressions might enable exploration and discovery. The `sexp find` command also supports inline s-expressions. Try these in your projects:
-
-- `sexp find '(class ___)'` to find class definitions
 - `sexp find '[child (class ___)]'` to find class definitions nested in a namespace
-- `sexp find '[child (case ___)]'` to find case statements
 
-So having test driven the development of [the `super-caller` matcher](lib/sexp_cli_tools/matchers/super_caller.rb) next we have to find the methods that respond to `super`.
+In addition to taking any `Sexp::Matcher.parse` pattern, `sexp_cli_tools` contains pre-built matchers for an expanding set of use cases.
 
-##### Finding super implementations
+- `sexp find method-implementation spares` to find implementations of the method named `spares`
 
-So far we've been using `Sexp::Matcher` strings to find quite abstract parts of our code. But, it's completely possible to fill in what in the parts we know that we'd like to find.
+## Development
 
-- `sexp find '(class :Bicycle ___)'` from my working copy of this project turns up the [test fixture file for `Bicycle`](https://github.com/cpb/sexp_cli_tools/blob/eb6ebe8722cd13cc91ba12bc69380e09c3bdfe0d/test/fixtures/coupling_between_superclasses_and_subclasses/bicycle.rb), as well as the copy of it `aruba` makes in the `tmp/` directory for testing purposes.
-- `sexp find '[child (defn :initialize ___)]'` only turns up the [test fixture file for `RoadBike`](https://github.com/cpb/sexp_cli_tools/blob/eb6ebe8722cd13cc91ba12bc69380e09c3bdfe0d/test/fixtures/coupling_between_superclasses_and_subclasses/test/fixtures/coupling_between_superclasses_and_subclasses/road_bike.rb). I guess it is time to fill in more of our `Bicycle` class!
+After checking out the repo, run `bundle install` to install dependencies. Then, run `bundle exec rake` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-Finding the super implementation will involve finding a class that contains a method defintion. So far, our matchers haven't taken any parameters. A (naive) matcher for a super implementation might have two parameters, the name of the class we expect to define the method, and the name of the method.
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
-##### Passing matcher parameters
+I strive to practice test driven development, and I believe you can observe that from the git history. It certainly provides a convenient experimental loop, and I attribute the emergence of a regression test to that technique.
 
-Early on I chose to have the second sequence argument to the command line interface `sexp find` the glob pattern of files to include in the search. However, I want to prioritize matcher parameters for that position now. Although my test coverage didn't include tests for that glob pattern, I did document it.
+## Contributing
 
-So, when I [moved that out into the `--include` command line option](https://github.com/cpb/sexp_cli_tools/pull/12/commits/af66f0b7da549426ee0b6444f46b317da279e9a0), that was a breaking change to the public interface. That would necessitate incrementing the major version number according to semantic versioning. I have a hunch that because I'm still in the `0` major release, I could get away with not bumping it. But, I think the `--include` is something I can stick to.
+This is an educational project. My goal is to learn. A favourite way for me to learn is through experimentation. I recognize that reading, research and teaching are also great ways to learn. With my writing, I try and offer a peek into my learning process. With that writing I can share and reflect on what I've tried, what I decided not to try, or what I didn't previously notice.
 
-What I remember about semantic versioning is that additions can just be minor version bumps. So, as long as I don't make a backwards incompatible change to the `find` command or the `--include` option I should be good.
+If you want to contribute, I hope the intention you bring to the contributions are to help me, or others interested in refactoring tools, to learn. I welcome the kind and generous contributions of others, but please consider that my attention might be focused elsewhere, and I might not be able to acknowledge your contribution or interest right away.
 
-Following merge of: [✨ `sexp find method-implementation passed_method` lists files that define the passed method](https://github.com/cpb/sexp_cli_tools/pull/12) I'll release `v1.0.0`! In that PR I chose to do inside-out testing because the `aruba` tests are a bit slow.
+Thank you for your interest or curiosity in what or how I do what I do.
 
-I found it helpful to run just the CLI command tests I was working on using the `TEST` and `TESTOPTS` options to the `rake` test tast, like so:
+## License
 
-```shell
-rake TEST='test/sexp_cli_tools/cli_test.rb' TESTOPTS="--name=/method-implementation/"
-```
-
-##### Capturing the Superclass name
-
-#### Hook methods from super callers
-
-#### Hook calls from super methods
-
+The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
