@@ -21,6 +21,32 @@ describe 'sexp find child-class' do
   end
 end
 
+describe 'sexp find child-class --include coupling_between_superclasses_and_subclasses/mountain_bike.rb' do
+  include CliTestHelpers
+
+  it "doesn't list classes not in the --include" do
+    _(subject).wont_match(/road_bike.rb/)
+  end
+
+  it 'does list matching files in the --include' do
+    _(subject).must_match(/mountain_bike.rb/)
+  end
+end
+
+included_files = %w[
+  coupling_between_superclasses_and_subclasses/road_bike.rb
+  coupling_between_superclasses_and_subclasses/mountain_bike.rb
+]
+
+describe "sexp find child-class --include #{included_files.join(' ')}" do
+  include CliTestHelpers
+
+  it 'does lists matches among all files in the --include' do
+    _(subject).must_match(/mountain_bike.rb/)
+    _(subject).must_match(/road_bike.rb/)
+  end
+end
+
 describe 'sexp find parent-class' do
   include CliTestHelpers
 

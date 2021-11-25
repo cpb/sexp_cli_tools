@@ -11,14 +11,16 @@ module SexpCliTools
       puts format('SexpCliTools version: %p', SexpCliTools::VERSION)
     end
 
-    option :include, default: '**/*.rb'
-    desc "find sexp-matcher [--include='**/*.rb']",
-         'Finds Ruby files matching the s-expression matcher in the `include` glob pattern.'
+    option :include, default: ['**/*.rb'], type: :array
+    desc 'find sexp-matcher [--include **/*.rb]',
+         'Finds Ruby files matching the s-expression matcher in the `include` glob pattern or file list.'
     def find(requested_sexp_matcher, *matcher_params)
-      glob = options[:include]
+      globs = options[:include]
       sexp_matcher = SexpCliTools::MATCHERS[requested_sexp_matcher]
-      Pathname.glob(glob).each do |path|
-        puts path.to_s if sexp_matcher.satisfy?(RubyParser.new.parse(path.read), *matcher_params)
+      globs.each do |glob|
+        Pathname.glob(glob).each do |path|
+          puts path.to_s if sexp_matcher.satisfy?(RubyParser.new.parse(path.read), *matcher_params)
+        end
       end
     end
   end
