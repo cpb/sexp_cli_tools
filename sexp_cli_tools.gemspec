@@ -8,10 +8,10 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Caleb Buxton']
   spec.email         = ['me@cpb.ca']
 
-  spec.summary       = 'Educational project exploring the utility in searching and manipulating codebases using S-expressions.'
+  spec.summary       = 'Learning in public about searching and manipulating codebases using S-expressions.'
   spec.homepage      = 'https://github.com/cpb/sexp_cli_tools'
   spec.license       = 'MIT'
-  spec.required_ruby_version = '>= 2.4.0'
+  spec.required_ruby_version = '>= 3.0.0'
 
   # spec.metadata["allowed_push_host"] = "TODO: Set to 'https://mygemserver.com'"
 

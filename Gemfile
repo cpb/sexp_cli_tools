@@ -6,7 +6,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'aruba', '~> 2.0.0'
-gem "lefthook", "~> 0.7.7"
+gem 'lefthook', '~> 0.7.7'
 gem 'minitest', '~> 5.0'
 gem 'pry', '~> 0.14.1'
 gem 'rake', '~> 13.0'
