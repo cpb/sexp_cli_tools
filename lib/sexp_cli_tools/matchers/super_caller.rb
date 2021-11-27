@@ -29,7 +29,7 @@ module SexpCliTools
 
       def process_defn(exp)
         super do
-          @matches << SexpMatchData.new(method_name.gsub(/^#/,'').to_sym) if exp.satisfy?(MATCHER)
+          @matches << SexpMatchData.new(method_name.gsub(/^#/, '').to_sym) if exp.satisfy?(MATCHER)
         end
       end
 
