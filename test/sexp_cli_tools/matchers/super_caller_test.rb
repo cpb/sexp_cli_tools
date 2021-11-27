@@ -57,3 +57,31 @@ describe 'SexpCliTools::Matchers::SuperCaller.satisfy? returned SexpMatchData#me
     it { assert_nil subject }
   end
 end
+
+describe 'SexpCliTools::Matchers::SuperCaller.satisfy? returned SexpMatchData#superclass' do
+  subject { SexpCliTools::Matchers::SuperCaller.satisfy?(sexp)&.map(&:superclass) }
+
+  include SuperCallerExamples
+
+  describe 'with an sexp with a call to super' do
+    let(:sexp) { with_super_caller_no_args }
+
+    it 'lists inferred superclass' do
+      assert(subject.all? { |i| i == :Bicycle })
+    end
+  end
+
+  describe 'with an sexp with a call to super passing args' do
+    let(:sexp) { with_super_caller }
+
+    it 'lists inferred superclass' do
+      assert(subject.all? { |i| i == :Bicycle })
+    end
+  end
+
+  describe 'with an sexp without a call to super' do
+    let(:sexp) { without_super_caller }
+
+    it { assert_nil subject }
+  end
+end
