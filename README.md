@@ -4,7 +4,7 @@ In this project I am learning and exploring how to create a refactoring tool. Th
 
 This project focuses on the hook method refactoring described in Chapter 6 of Practical Object-Oriented Design in Ruby by Sandi Metz. In Chapter 6, we are presented with a `Bicycle`, `MountainBike` and `RoadBike` class, with the two specialized bikes calling `super` in a few of their methods. These `super` calls couple `MountainBike` and `RoadBike` to `Bicycle` by requiring them to know the details of the algorithm invoked by `super`. With a hook method refactor, now `Bicycle` can expect that local customizations of `Bicycle` behaviour are fulfilled by subclasses implementing hook methods, which `Bicycle` then calls.
 
-Within the project wiki are my exploratory research notes. I am experimenting with writing as I work. Some of the writing helps me clarify my thinking, some is drafting of content for future posts, and some help me restore state when I change context.
+Within the project [wiki](https://github.com/cpb/sexp_cli_tools/wiki) are my exploratory research notes. I am experimenting with writing as I work. Some of the writing helps me clarify my thinking, some is drafting of content for future posts, and some help me restore state when I change context.
 
 Part of my learning process includes creating a tool that myself and others can use to improve their understanding of, in this case, refactoring tools. While this is a gem, depending on your needs, it might make sense to just go with the *install it yourself* option below.
 
