@@ -16,23 +16,25 @@ module SexpCliTools
         processor = new
         processor.process(sexp)
 
-        captured_data = processor
-          .method_locations
-          .map do |signature, location|
-            SexpMatchData.new(signature.split('#').last.to_sym)
-          end
+        processor.matches if processor.matched?
+      end
 
-        captured_data.first if processor.matched?
+      attr_reader :matches
+
+      def initialize(*)
+        super
+
+        @matches = []
       end
 
       def process_defn(exp)
         super do
-          @matched ||= exp.satisfy?(MATCHER)
+          @matches << SexpMatchData.new(method_name.gsub(/^#/,'').to_sym) if exp.satisfy?(MATCHER)
         end
       end
 
       def matched?
-        @matched
+        !@matches.empty?
       end
     end
   end

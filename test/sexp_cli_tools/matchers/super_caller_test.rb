@@ -28,21 +28,29 @@ describe 'SexpCliTools::Matchers::SuperCaller' do
   end
 end
 
-describe 'SexpMatchData#method_name' do
-  subject { SexpCliTools::Matchers::SuperCaller.satisfy?(sexp)&.method_name }
+describe 'SexpCliTools::Matchers::SuperCaller.satisfy? returned SexpMatchData' do
+  subject { SexpCliTools::Matchers::SuperCaller.satisfy?(sexp) }
 
   include SuperCallerExamples
 
   describe 'with an sexp with a call to super' do
     let(:sexp) { with_super_caller_no_args }
 
-    it { _(subject).must_equal :spares }
+    it 'lists matched method names' do
+      method_names = subject.map(&:method_name)
+      _(method_names).must_include :initialize
+      _(method_names).must_include :spares
+    end
   end
 
   describe 'with an sexp with a call to super passing args' do
     let(:sexp) { with_super_caller }
 
-    it { _(subject).must_equal :initialize }
+    it 'lists matched method names' do
+      method_names = subject.map(&:method_name)
+      _(method_names).must_include :initialize
+      _(method_names).must_include :spares
+    end
   end
 
   describe 'with an sexp without a call to super' do
