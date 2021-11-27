@@ -91,7 +91,7 @@ describe 'sexp find method-implementation initialize' do
     _(subject).must_match(/road_bike.rb/)
   end
 
-  it "doest not list mountain_bike, doesn't have initialize" do
-    _(subject).wont_match(/mountain_bike.rb/)
+  it "doest not list no_initialize, doesn't have initialize" do
+    _(subject).wont_match(/no_initialize.rb/)
   end
 end
