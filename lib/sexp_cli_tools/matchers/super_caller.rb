@@ -10,7 +10,7 @@ module SexpCliTools
       # zsuper I noticed while simplifying the examples
       MATCHER = Sexp::Matcher.parse('[child (super ___)]') | Sexp::Matcher.parse('[child (zsuper)]')
 
-      SexpMatchData = Struct.new(:superclass, :method_name)
+      SexpMatchData = Struct.new(:signature, :super_signature)
 
       def self.satisfy?(sexp)
         processor = new
@@ -38,9 +38,13 @@ module SexpCliTools
         @superclasses.last
       end
 
+      def super_signature
+        [superclass_name, method_name].join
+      end
+
       def process_defn(exp)
         super do
-          @matches << SexpMatchData.new(superclass_name, method_name.gsub(/^#/, '').to_sym) if exp.satisfy?(MATCHER)
+          @matches << SexpMatchData.new(signature, super_signature) if exp.satisfy?(MATCHER)
         end
       end
 

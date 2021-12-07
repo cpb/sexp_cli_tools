@@ -29,7 +29,7 @@ describe 'SexpCliTools::Matchers::SuperCaller' do
 end
 
 describe 'SexpCliTools::Matchers::SuperCaller.satisfy? returned SexpMatchData#method_name' do
-  subject { SexpCliTools::Matchers::SuperCaller.satisfy?(sexp)&.map(&:method_name) }
+  subject { SexpCliTools::Matchers::SuperCaller.satisfy?(sexp)&.map(&:signature) }
 
   include SuperCallerExamples
 
@@ -37,8 +37,8 @@ describe 'SexpCliTools::Matchers::SuperCaller.satisfy? returned SexpMatchData#me
     let(:sexp) { with_super_caller_no_args }
 
     it 'lists matched method names' do
-      _(subject).must_include :initialize
-      _(subject).must_include :spares
+      _(subject).must_include 'MountainBike#initialize'
+      _(subject).must_include 'MountainBike#spares'
     end
   end
 
@@ -46,8 +46,8 @@ describe 'SexpCliTools::Matchers::SuperCaller.satisfy? returned SexpMatchData#me
     let(:sexp) { with_super_caller }
 
     it 'lists matched method names' do
-      _(subject).must_include :initialize
-      _(subject).must_include :spares
+      _(subject).must_include 'RoadBike#initialize'
+      _(subject).must_include 'RoadBike#spares'
     end
   end
 
@@ -58,24 +58,26 @@ describe 'SexpCliTools::Matchers::SuperCaller.satisfy? returned SexpMatchData#me
   end
 end
 
-describe 'SexpCliTools::Matchers::SuperCaller.satisfy? returned SexpMatchData#superclass' do
-  subject { SexpCliTools::Matchers::SuperCaller.satisfy?(sexp)&.map(&:superclass) }
+describe 'SexpCliTools::Matchers::SuperCaller.satisfy? returned SexpMatchData#super_signature' do
+  subject { SexpCliTools::Matchers::SuperCaller.satisfy?(sexp)&.map(&:super_signature) }
 
   include SuperCallerExamples
 
   describe 'with an sexp with a call to super' do
     let(:sexp) { with_super_caller_no_args }
 
-    it 'lists inferred superclass' do
-      assert(subject.all? { |i| i == 'Bicycle' })
+    it 'lists inferred superclass method signatures' do
+      expect(subject).must_include 'Bicycle#initialize'
+      expect(subject).must_include 'Bicycle#spares'
     end
   end
 
   describe 'with an sexp with a call to super passing args' do
     let(:sexp) { with_super_caller }
 
-    it 'lists inferred superclass' do
-      assert(subject.all? { |i| i == 'Bicycle' })
+    it 'lists inferred superclass method signatures' do
+      expect(subject).must_include 'Bicycle#initialize'
+      expect(subject).must_include 'Bicycle#spares'
     end
   end
 
