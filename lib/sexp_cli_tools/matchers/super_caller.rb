@@ -61,7 +61,7 @@ module SexpCliTools
       private
 
       def sexp_to_classname(sexp)
-        return sexp unless Sexp === sexp
+        return sexp unless sexp.is_a?(Sexp)
 
         type, *rest = sexp
         case type
