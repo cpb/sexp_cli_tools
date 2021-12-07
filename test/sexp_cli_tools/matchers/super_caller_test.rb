@@ -85,3 +85,22 @@ describe 'SexpCliTools::Matchers::SuperCaller.satisfy? returned SexpMatchData#su
     it { assert_nil subject }
   end
 end
+
+describe 'SexpCliTools::Matchers::SuperCaller#in_superclass(String)' do
+  let(:matcher) { SexpCliTools::Matchers::SuperCaller.new }
+
+  it 'does not modify the String parameter for #superclass_name in the block' do
+    matcher.in_superclass 'SuperclassName' do
+      _(matcher.superclass_name).must_equal 'SuperclassName'
+    end
+  end
+
+  it 'does not stack superclasses into namespaces' do
+    matcher.in_superclass 'SuperclassName' do
+      matcher.in_superclass 'FunkyStructure' do
+        _(matcher.superclass_name).must_equal 'FunkyStructure'
+      end
+      _(matcher.superclass_name).must_equal 'SuperclassName'
+    end
+  end
+end

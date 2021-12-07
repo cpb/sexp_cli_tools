@@ -28,6 +28,16 @@ module SexpCliTools
         @superclasses = []
       end
 
+      def in_superclass(superclass_expression, &block)
+        @superclasses << superclass_expression
+        block.call if block_given?
+        @superclasses.pop
+      end
+
+      def superclass_name
+        @superclasses.last
+      end
+
       def process_defn(exp)
         super do
           @matches << SexpMatchData.new(@superclasses.last, method_name.gsub(/^#/, '').to_sym) if exp.satisfy?(MATCHER)
