@@ -48,9 +48,11 @@ module SexpCliTools
         super do
           possible_superclass = exp.shift
 
-          @superclasses << possible_superclass.last if possible_superclass
-
-          process_until_empty exp
+          if possible_superclass
+            in_superclass(possible_superclass) do
+              process_until_empty exp
+            end
+          end
         end
       end
 
@@ -65,10 +67,12 @@ module SexpCliTools
 
         type, *rest = sexp
         case type
-        when :colon3
+        when :colon3, :const
           rest.first.to_s
-        else
+        when :colon2
           [rest.first.last, rest.last].join('::')
+        else
+          raise NotImplemented, "haven't handled #{type} yet"
         end
       end
     end

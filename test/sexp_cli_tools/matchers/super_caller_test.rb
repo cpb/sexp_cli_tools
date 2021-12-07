@@ -67,7 +67,7 @@ describe 'SexpCliTools::Matchers::SuperCaller.satisfy? returned SexpMatchData#su
     let(:sexp) { with_super_caller_no_args }
 
     it 'lists inferred superclass' do
-      assert(subject.all? { |i| i == :Bicycle })
+      assert(subject.all? { |i| i == 'Bicycle' })
     end
   end
 
@@ -75,7 +75,7 @@ describe 'SexpCliTools::Matchers::SuperCaller.satisfy? returned SexpMatchData#su
     let(:sexp) { with_super_caller }
 
     it 'lists inferred superclass' do
-      assert(subject.all? { |i| i == :Bicycle })
+      assert(subject.all? { |i| i == 'Bicycle' })
     end
   end
 
