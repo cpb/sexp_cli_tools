@@ -104,3 +104,23 @@ describe 'SexpCliTools::Matchers::SuperCaller#in_superclass(String)' do
     end
   end
 end
+
+describe 'SexpCliTools::Matchers::SuperCaller#in_superclass(Sexp)' do
+  let(:matcher) { SexpCliTools::Matchers::SuperCaller.new }
+
+  def s(*args)
+    Sexp.new(*args)
+  end
+
+  it 'turns namespaced constant s-expressions into class names' do
+    matcher.in_superclass s(:colon2, s(:const, :X), :Y) do
+      _(matcher.superclass_name).must_equal 'X::Y'
+    end
+  end
+
+  it 'turns namespace busting s-expressions into class names' do
+    matcher.in_superclass s(:colon3, :Y) do
+      _(matcher.superclass_name).must_equal 'Y'
+    end
+  end
+end

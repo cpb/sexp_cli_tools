@@ -29,7 +29,7 @@ module SexpCliTools
       end
 
       def in_superclass(superclass_expression, &block)
-        @superclasses << superclass_expression
+        @superclasses << sexp_to_classname(superclass_expression)
         block.call if block_given?
         @superclasses.pop
       end
@@ -56,6 +56,20 @@ module SexpCliTools
 
       def matched?
         !@matches.empty?
+      end
+
+      private
+
+      def sexp_to_classname(sexp)
+        return sexp unless Sexp === sexp
+
+        type, *rest = sexp
+        case type
+        when :colon3
+          rest.first.to_s
+        else
+          [rest.first.last, rest.last].join('::')
+        end
       end
     end
   end
