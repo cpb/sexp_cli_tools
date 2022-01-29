@@ -10,7 +10,11 @@ module SexpCliTools
       # zsuper I noticed while simplifying the examples
       MATCHER = Sexp::Matcher.parse('[child (super ___)]') | Sexp::Matcher.parse('[child (zsuper)]')
 
-      SexpMatchData = Struct.new(:signature, :super_signature)
+      SexpMatchData = Struct.new(:signature, :super_signature) do
+        def inference
+          [signature, super_signature].join(' --> |super| ')
+        end
+      end
 
       def self.satisfy?(sexp)
         processor = new

@@ -73,6 +73,17 @@ describe 'sexp find super-caller' do
   end
 end
 
+describe 'sexp find super-caller --only-inferences' do
+  include CliTestHelpers
+
+  it 'lists match data inferences' do
+    _(subject).must_match(/MountainBike#initialize --> \|super\| Bicycle#initialize/)
+    _(subject).must_match(/MountainBike#spares --> \|super\| Bicycle#spares/)
+    _(subject).must_match(/RoadBike#initialize --> \|super\| Bicycle#initialize/)
+    _(subject).must_match(/RoadBike#spares --> \|super\| Bicycle#spares/)
+  end
+end
+
 describe "sexp find '(class ___)'" do
   include CliTestHelpers
 

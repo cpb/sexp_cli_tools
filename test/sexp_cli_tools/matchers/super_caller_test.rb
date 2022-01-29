@@ -58,6 +58,14 @@ describe 'SexpCliTools::Matchers::SuperCaller.satisfy? returned SexpMatchData#me
   end
 end
 
+describe 'SexpCliTools::Matchers::SuperCaller::SexpMatchData#inference' do
+  subject { SexpCliTools::Matchers::SuperCaller::SexpMatchData.new('A#b', 'B#b').inference }
+
+  it 'connects the signature to the super_signature' do
+    _(subject).must_equal('A#b --> |super| B#b')
+  end
+end
+
 describe 'SexpCliTools::Matchers::SuperCaller.satisfy? returned SexpMatchData#super_signature' do
   subject { SexpCliTools::Matchers::SuperCaller.satisfy?(sexp)&.map(&:super_signature) }
 
