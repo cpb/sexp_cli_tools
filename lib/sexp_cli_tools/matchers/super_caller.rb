@@ -48,6 +48,18 @@ module SexpCliTools
         end
       end
 
+      # Probably good for detection, but observes without the context we
+      # need to relocate.
+      # def process_super(exp)
+      #   @matches << SexpMatchData.new(signature, super_signature)
+      #   exp
+      # end
+      #
+      # def process_zsuper(exp)
+      #   @matches << SexpMatchData.new(signature, super_signature)
+      #   exp
+      # end
+
       def process_class(exp)
         super do
           possible_superclass = exp.shift
