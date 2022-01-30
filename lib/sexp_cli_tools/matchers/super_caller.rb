@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'sexp_processor'
+require 'json'
 
 module SexpCliTools
   module Matchers
@@ -10,9 +11,25 @@ module SexpCliTools
       # zsuper I noticed while simplifying the examples
       MATCHER = Sexp::Matcher.parse('[child (super ___)]') | Sexp::Matcher.parse('[child (zsuper)]')
 
-      SexpMatchData = Struct.new(:signature, :super_signature) do
-        def inference
+      SexpMatchData = Struct.new(:signature, :super_signature, :path) do
+        def to_mermaid
           [signature, super_signature].join(' --> |super| ')
+        end
+
+        def to_json(*args)
+          as_json.to_json(*args)
+        end
+
+        def as_json
+          {
+            sender: {
+              path: path,
+              signature: signature
+            },
+            receiver: {
+              signature: super_signature
+            }
+          }
         end
       end
 
@@ -48,7 +65,7 @@ module SexpCliTools
 
       def process_defn(exp)
         super do
-          @matches << SexpMatchData.new(signature, super_signature) if exp.satisfy?(MATCHER)
+          @matches << SexpMatchData.new(signature, super_signature, exp.file) if exp.satisfy?(MATCHER)
         end
       end
 

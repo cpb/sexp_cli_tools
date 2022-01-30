@@ -73,14 +73,50 @@ describe 'sexp find super-caller' do
   end
 end
 
-describe 'sexp find super-caller --only-inferences' do
+describe 'sexp find super-caller --json' do # rubocop:disable Metrics/BlockLength
   include CliTestHelpers
 
   it 'lists match data inferences' do
-    _(subject).must_match(/MountainBike#initialize --> \|super\| Bicycle#initialize/)
-    _(subject).must_match(/MountainBike#spares --> \|super\| Bicycle#spares/)
-    _(subject).must_match(/RoadBike#initialize --> \|super\| Bicycle#initialize/)
-    _(subject).must_match(/RoadBike#spares --> \|super\| Bicycle#spares/)
+    _(subject).must_match(<<~EXPECTED_JSON)
+      [
+        {
+          "sender": {
+            "path": "coupling_between_superclasses_and_subclasses/mountain_bike.rb",
+            "signature": "MountainBike#initialize"
+          },
+          "receiver": {
+            "signature": "Bicycle#initialize"
+          }
+        },
+        {
+          "sender": {
+            "path": "coupling_between_superclasses_and_subclasses/mountain_bike.rb",
+            "signature": "MountainBike#spares"
+          },
+          "receiver": {
+            "signature": "Bicycle#spares"
+          }
+        },
+        {
+          "sender": {
+            "path": "coupling_between_superclasses_and_subclasses/road_bike.rb",
+            "signature": "RoadBike#initialize"
+          },
+          "receiver": {
+            "signature": "Bicycle#initialize"
+          }
+        },
+        {
+          "sender": {
+            "path": "coupling_between_superclasses_and_subclasses/road_bike.rb",
+            "signature": "RoadBike#spares"
+          },
+          "receiver": {
+            "signature": "Bicycle#spares"
+          }
+        }
+      ]
+    EXPECTED_JSON
   end
 end
 

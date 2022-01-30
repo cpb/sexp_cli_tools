@@ -8,12 +8,16 @@ require 'minitest/autorun'
 
 require 'pry'
 
-def fixture_code(basename, relative_path = Pathname.new('test/fixtures/coupling_between_superclasses_and_subclasses'))
-  relative_path.join(basename).read
+def fixture_path(basename, relative_path = Pathname.new('test/fixtures/coupling_between_superclasses_and_subclasses'))
+  relative_path.join(basename)
+end
+
+def fixture_code(path)
+  fixture_path(path).read
 end
 
 def parse_file(basename)
-  RubyParser.new.parse(fixture_code(basename))
+  RubyParser.new.parse(fixture_code(basename), fixture_path(basename))
 end
 
 module CliTestHelpers

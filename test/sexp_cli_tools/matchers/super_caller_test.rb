@@ -28,7 +28,7 @@ describe 'SexpCliTools::Matchers::SuperCaller' do
   end
 end
 
-describe 'SexpCliTools::Matchers::SuperCaller.satisfy? returned SexpMatchData#method_name' do
+describe 'SexpCliTools::Matchers::SuperCaller.satisfy? returned SexpMatchData#signature' do
   subject { SexpCliTools::Matchers::SuperCaller.satisfy?(sexp)&.map(&:signature) }
 
   include SuperCallerExamples
@@ -58,11 +58,83 @@ describe 'SexpCliTools::Matchers::SuperCaller.satisfy? returned SexpMatchData#me
   end
 end
 
-describe 'SexpCliTools::Matchers::SuperCaller::SexpMatchData#inference' do
-  subject { SexpCliTools::Matchers::SuperCaller::SexpMatchData.new('A#b', 'B#b').inference }
+describe 'SexpCliTools::Matchers::SuperCaller::SexpMatchData#to_mermaid' do
+  subject { SexpCliTools::Matchers::SuperCaller::SexpMatchData.new('A#b', 'B#b').to_mermaid }
 
   it 'connects the signature to the super_signature' do
     _(subject).must_equal('A#b --> |super| B#b')
+  end
+end
+
+describe 'SexpCliTools::Matchers::SuperCaller.satisfy? returned SexpMatchData#as_json' do # rubocop:disable Metrics/BlockLength
+  subject { SexpCliTools::Matchers::SuperCaller.satisfy?(sexp)&.map(&:as_json) }
+
+  include SuperCallerExamples
+
+  describe 'with an sexp with a call to super' do
+    let(:sexp) { with_super_caller_no_args }
+
+    it 'lists inferred superclass method signatures' do
+      expect(subject).must_include(
+        {
+          sender: {
+            path: fixture_path('mountain_bike.rb'),
+            signature: 'MountainBike#initialize'
+          },
+          receiver: {
+            signature: 'Bicycle#initialize'
+          }
+        }
+      )
+
+      expect(subject).must_include(
+        {
+          sender: {
+            path: fixture_path('mountain_bike.rb'),
+            signature: 'MountainBike#spares'
+          },
+          receiver: {
+            signature: 'Bicycle#spares'
+          }
+        }
+      )
+    end
+  end
+
+  describe 'with an sexp with a call to super passing args' do
+    let(:sexp) { with_super_caller }
+
+    it 'lists inferred superclass method signatures' do
+      expect(subject).must_include(
+        {
+          sender: {
+            path: fixture_path('road_bike.rb'),
+            signature: 'RoadBike#initialize'
+          },
+          receiver: {
+            signature: 'Bicycle#initialize'
+          }
+        }
+      )
+
+      expect(subject).must_include(
+        {
+          sender: {
+            path: fixture_path('road_bike.rb'),
+            signature: 'RoadBike#spares'
+          },
+          receiver: {
+            signature: 'Bicycle#spares'
+          }
+        }
+      )
+    end
+  end
+
+  describe 'with an sexp without a call to super' do
+    let(:sexp) { without_super_caller }
+
+    it { assert_nil subject }
   end
 end
 

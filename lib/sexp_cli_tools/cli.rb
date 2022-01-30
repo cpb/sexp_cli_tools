@@ -11,34 +11,94 @@ module SexpCliTools
       puts format('SexpCliTools version: %p', SexpCliTools::VERSION)
     end
 
-    option :only_inferences, default: false, type: :boolean
+    option :json, default: false, type: :boolean
     option :include, default: ['**/*.rb'], type: :array
     desc 'find sexp-matcher [--include **/*.rb]',
          'Finds Ruby files matching the s-expression matcher in the `include` glob pattern or file list.'
     def find(requested_sexp_matcher, *matcher_params)
-      globs = options[:include]
+      paths = Glob.new(options[:include])
       sexp_matcher = SexpCliTools::MATCHERS[requested_sexp_matcher]
-      globs.each do |glob|
-        Pathname.glob(glob).each do |path|
-          matches = sexp_matcher.satisfy?(RubyParser.new.parse(path.read), *matcher_params)
 
-          emit(path, matches, **kwargs(options))
+      paths
+        .reduce(build_buffer(**kwargs(options))) do |output, path|
+          matches = sexp_matcher.satisfy?(sexp(path), *matcher_params)
+
+          output << emit(path, matches, **kwargs(options))
+        end
+        .flush
+    end
+
+    # Enumerable reducer of globs to paths
+    class Glob
+      include Enumerable
+
+      def initialize(globs)
+        @globs = Array(globs)
+      end
+
+      def each(&block)
+        @globs.each do |glob|
+          Pathname.glob(glob).each(&block)
         end
       end
     end
 
+    # Provides a stream like interface to emitting json
+    class JSONBuffer
+      def initialize
+        @received = []
+      end
+
+      def <<(elements)
+        @received.push(*elements)
+        self
+      end
+
+      def flush
+        puts JSON.pretty_generate(@received)
+      end
+    end
+
+    # Provides a stream like interface to emitting filenames
+    class PathBuffer
+      def initialize
+        @received = []
+      end
+
+      def <<(elements)
+        @received.push(*elements)
+        self
+      end
+
+      def flush
+        puts @received
+      end
+    end
+
     no_commands do
+      def build_buffer(json:, **_)
+        if json
+          JSONBuffer.new
+        else
+          PathBuffer.new
+        end
+      end
+
+      def sexp(path)
+        RubyParser.new.parse(path.read, path)
+      end
+
       def kwargs(indifferent_hash)
         indifferent_hash.transform_keys(&:to_sym)
       end
 
-      def emit(path, matches, only_inferences:, **_)
+      def emit(path, matches, json:, **_)
         return unless matches
 
-        if only_inferences
-          puts matches.map(&:inference)
+        if json
+          matches
         else
-          puts path.to_s
+          path
         end
       end
     end
