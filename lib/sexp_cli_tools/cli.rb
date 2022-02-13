@@ -16,31 +16,16 @@ module SexpCliTools
     desc 'find sexp-matcher [--include **/*.rb]',
          'Finds Ruby files matching the s-expression matcher in the `include` glob pattern or file list.'
     def find(requested_sexp_matcher, *matcher_params)
-      paths = Glob.new(options[:include])
+      paths = GlobParser.new(options[:include])
       sexp_matcher = SexpCliTools::MATCHERS[requested_sexp_matcher]
 
       paths
-        .reduce(build_buffer(**kwargs(options))) do |output, path|
-          matches = sexp_matcher.satisfy?(sexp(path), *matcher_params)
+        .reduce(build_buffer(**kwargs(options))) do |output, sexp|
+          matches = sexp_matcher.satisfy?(sexp, *matcher_params)
 
-          output << emit(path, matches, **kwargs(options))
+          output << emit(sexp, matches, **kwargs(options))
         end
         .flush
-    end
-
-    # Enumerable reducer of globs to paths
-    class Glob
-      include Enumerable
-
-      def initialize(globs)
-        @globs = Array(globs)
-      end
-
-      def each(&block)
-        @globs.each do |glob|
-          Pathname.glob(glob).each(&block)
-        end
-      end
     end
 
     # Provides a stream like interface to emitting json
@@ -92,13 +77,13 @@ module SexpCliTools
         indifferent_hash.transform_keys(&:to_sym)
       end
 
-      def emit(path, matches, json:, **_)
+      def emit(sexp, matches, json:, **_)
         return unless matches
 
         if json
           matches
         else
-          path
+          sexp.file
         end
       end
     end

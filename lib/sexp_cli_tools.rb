@@ -2,12 +2,15 @@
 
 require 'ruby_parser'
 
-require_relative 'sexp_cli_tools/version'
-require_relative 'sexp_cli_tools/matchers/super_caller'
-require_relative 'sexp_cli_tools/matchers/method_implementation'
-
+# No Doc
 module SexpCliTools
+  # No Doc
   class Error < StandardError; end
+
+  require_relative 'sexp_cli_tools/version'
+  require_relative 'sexp_cli_tools/glob_parser'
+  require_relative 'sexp_cli_tools/matchers/super_caller'
+  require_relative 'sexp_cli_tools/matchers/method_implementation'
 
   MATCHERS = Hash
              .new { |hash, key| hash[key] = Sexp::Matcher.parse(key) }

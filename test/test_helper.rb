@@ -20,6 +20,23 @@ def parse_file(basename)
   RubyParser.new.parse(fixture_code(basename), fixture_path(basename))
 end
 
+module Tempfiles
+  def tempfile(name, contents)
+    tempfile = Tempfile.new(name)
+    tempfile.write(contents)
+    tempfile.flush
+
+    @tempfiles = [*@tempfiles, tempfile]
+    Pathname.new tempfile.path
+  end
+
+  def self.included(group)
+    group.after do
+      @tempfiles.each(&:close)
+    end
+  end
+end
+
 module CliTestHelpers
   module TestVariableSetup
     def prepare_workspace_hook
